@@ -11,13 +11,15 @@
   <!-- Hier werden die Nutzernamen eingeblendet -->
 </div>
 
-
 <script>
+// Setze die Basis-URL basierend auf dem Hostnamen der Seite
+const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:3000/api' : 'https://zwitschern.chat/api';
+
 // Funktion, um Nutzerdaten vom Server zu holen
 async function fetchUsernames() {
   try {
     // Fetch-Anfrage an die Backend-Route
-    const response = await fetch('https://zwitschern.chat/api/users');
+    const response = await fetch(`${API_BASE_URL}/users`);
     
     // Überprüfen, ob die Anfrage erfolgreich war
     if (!response.ok) {
@@ -45,7 +47,6 @@ fetchUsernames();
 </script>
 
 <iframe width="560" height="315" src='https://dbdiagram.io/embed/653a5a78ffbf5169f08363f4'> </iframe>
-
 
 </body>
 </html>
