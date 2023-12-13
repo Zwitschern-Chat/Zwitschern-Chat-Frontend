@@ -4,11 +4,39 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Zwitschern.Chat</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<div class="blur-background"></div>
 
-<div id="user-list">
-  <!-- Hier werden die Nutzernamen eingeblendet -->
+<!-- Header of Website -->
+<div class="header">
+    <!-- Logo of Website -->
+  <img src="assets/Zwitschern.Chat_LOGO.png" alt="Logo" class="zwitschern-chat-logo" onclick="window.location.href='https://zwitschern.chat/'">
+  <div class="header__text">
+    <div class="header__title">Zwitschern.Chat</div>
+    <div class="header__subtitle">DER CHAT FÜR ALLE!</div>
+  </div>
+  <img src="assets/account.png" alt="Account" class="account" onclick="window.location.href='https://zwitschern.chat/account'">
+</div>
+
+<!-- Chat Test Placeholder-->
+  <div class="chat__input">
+    <form action="send-message.php" method="post">
+      <input type="text" name="message" placeholder="Nachricht" required>
+      <button type="submit">Senden</button>
+    </form>
+  </div>
+</div>
+
+<!-- User List Test Placeholder -->
+<div class="user-list">
+  <div class="user-list__header">Nutzer-Liste: </div>
+  <div class="user-list__users">
+    <div id="user-list">
+      <!-- Hier werden die Nutzernamen eingeblendet -->
+    </div>    
+  </div>
 </div>
 
 <script>
@@ -46,7 +74,7 @@ async function fetchUsernames() {
 fetchUsernames();
 </script>
 
-<iframe width="560" height="315" src='https://dbdiagram.io/embed/653a5a78ffbf5169f08363f4'> </iframe>
+<!-- <iframe width="560" height="315" src='https://dbdiagram.io/embed/653a5a78ffbf5169f08363f4'> </iframe> -->
 
 </body>
 </html>
