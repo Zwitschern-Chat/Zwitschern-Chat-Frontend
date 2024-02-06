@@ -17,7 +17,7 @@
     <div class="header__title">ZWITSCHERN.CHAT</div>
     <div class="header__subtitle">DER CHAT FÜR ALLE!</div>
   </div>
-  <img src="assets/account.png" alt="Account" class="account" onclick="window.location.href='https://zwitschern.chat/account'">
+  <img src="assets/account.png" alt="Account" class="account" onclick="window.location.href='https://zwitschern.chat/auth/account'">
 </div>
 
 <!-- Chat Test Placeholder-->
@@ -32,7 +32,7 @@
 <!-- User List Test Placeholder -->
 <div class="user-list">
   <div class="user-list__header">Nutzer-Liste: </div>
-  <div class="user-list__users">
+  <div class="user-list__user">
     <div id="user-list">
       <!-- Hier werden die Nutzernamen eingeblendet -->
     </div>    
@@ -43,11 +43,17 @@
 // Setze die Basis-URL basierend auf dem Hostnamen der Seite
 const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:3000/api' : 'https://zwitschern.chat/api';
 
+// Ihr fester API-Schlüssel
+const API_KEY = 'Fen4GC6KRjmt';
+
 // Funktion, um Nutzerdaten vom Server zu holen
 async function fetchUsernames() {
   try {
-    // Fetch-Anfrage an die Backend-Route
-    const response = await fetch(`${API_BASE_URL}/users`);
+    // Füge den API-Schlüssel als Query-String-Parameter hinzu
+    const url = `${API_BASE_URL}/users?apiKey=${API_KEY}`;
+
+    // Fetch-Anfrage an die Backend-Route mit dem API-Schlüssel
+    const response = await fetch(url);
     
     // Überprüfen, ob die Anfrage erfolgreich war
     if (!response.ok) {

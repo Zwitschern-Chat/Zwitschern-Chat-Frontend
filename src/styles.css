@@ -37,7 +37,6 @@ body {
     padding: 20px;
     background: linear-gradient(to right, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.8));
     border-bottom: 1px solid #eee;
-    border-radius: 60px;
     justify-content: center;
     align-items: center;
     box-shadow: 0 0 10px rgba(0, 255, 255, 0.5), 0 0 20px rgba(0, 255, 255, 0.5);
@@ -63,4 +62,24 @@ body {
     font-size: 1vh;
     font-weight: 1000;
     color: #1da1f2;
+}
+
+/* Media Queries for Desktop */
+@media (min-width: 1024px) {
+    .zwitschern-chat-logo, .account {
+        height: 15vh; 
+        width: auto;
+    }
+
+    .header {
+        height: 15vh; 
+    }
+
+    .header__title {
+        font-size: 5vh;
+    }
+
+    .header__subtitle {
+        font-size: 2vh;
+    }
 }
