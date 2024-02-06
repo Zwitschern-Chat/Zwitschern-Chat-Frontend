@@ -11,7 +11,6 @@
 
 <!-- Header of Website -->
 <div class="header">
-    <!-- Logo of Website -->
   <img src="assets/Zwitschern.Chat_LOGO.png" alt="Logo" class="zwitschern-chat-logo" onclick="window.location.href='https://zwitschern.chat/'">
   <div class="header__text">
     <div class="header__title">ZWITSCHERN.CHAT</div>
@@ -21,24 +20,33 @@
   <img src="../assets/account.png" alt="Account" class="account" style="display: none;" onclick="window.location.href='https://zwitschern.chat/auth/account'">
 </div>
 
-<!-- Chat Test Placeholder-->
-  <div class="chat__input">
-    <form action="send-message.php" method="post">
-      <input type="text" name="message" placeholder="Nachricht" required>
-      <button type="submit">Senden</button>
-    </form>
-  </div>
-</div>
-
 <!-- User List Test Placeholder -->
 <div class="user-list">
   <div class="user-list__header">Nutzer-Liste: </div>
   <div class="user-list__user">
     <div id="user-list">
       <!-- Hier werden die Nutzernamen eingeblendet -->
-    </div>    
+    </div>
   </div>
 </div>
+
+<!-- Chat Test Placeholder-->
+<div class="chat__input">
+  <!-- Neues Eingabefeld für den Titel -->
+  <input type="text" id="title" placeholder="Titel" required>
+  <!-- Aktualisiertes Eingabefeld für den Text -->
+  <input type="text" id="message" placeholder="Nachricht" required>
+  <button type="button" onclick="sendMessage()">Senden</button>
+</div>
+
+<!-- Chat Test Placeholder-->
+<div class="chat__output">
+  <div class="chat__output__header">Nachrichten: </div>
+  <div class="chat__output__post">
+    <div id="chat__output">
+      <!-- Hier werden die Nachrichten eingeblendet -->
+    </div>
+  </div>
 
 <script>
 // Setze die Basis-URL basierend auf dem Hostnamen der Seite
@@ -50,27 +58,14 @@ const API_KEY = 'Fen4GC6KRjmt';
 // Funktion, um Nutzerdaten vom Server zu holen
 async function fetchUsernames() {
   try {
-    // Füge den API-Schlüssel als Query-String-Parameter hinzu
     const url = `${API_BASE_URL}/users?apiKey=${API_KEY}`;
-
-    // Fetch-Anfrage an die Backend-Route mit dem API-Schlüssel
     const response = await fetch(url);
-    
-    // Überprüfen, ob die Anfrage erfolgreich war
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-
-    // Extrahieren der JSON-Daten aus der Antwort
     const data = await response.json();
-    
-    // Element, in dem die Nutzernamen angezeigt werden sollen
     const userList = document.getElementById('user-list');
-    
-    // Erstellen einer Liste der Nutzernamen
     const usernames = data.map(user => user.username).join('<br>');
-    
-    // Anzeigen der Nutzernamen im div#user-list Element
     userList.innerHTML = usernames;
   } catch (error) {
     console.error('Es gab ein Problem mit der Fetch-Anfrage:', error);
@@ -79,9 +74,112 @@ async function fetchUsernames() {
 
 // Aufrufen der Funktion beim Laden der Seite
 fetchUsernames();
-</script>
 
-<!-- <iframe width="560" height="315" src='https://dbdiagram.io/embed/653a5a78ffbf5169f08363f4'> </iframe> -->
+async function fetchPosts() {
+  try {
+    const url = `${API_BASE_URL}/posts?apiKey=${API_KEY}`;
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    const postList = document.getElementById('chat__output');
+    const posts = data.map(post => `<div class="post"><h3>${post.title}</h3><p>${post.body}</p></div>`).join('');
+    postList.innerHTML = posts;    
+  } catch (error) {
+    console.error('Es gab ein Problem mit der Fetch-Anfrage:', error);
+  }
+}
+fetchPosts();
+
+
+async function sendMessage() {
+  let title = document.getElementById('title').value;
+  let text = document.getElementById('message').value;
+
+  // Validierung hinzufügen
+  if (!title || !text) {
+    console.error('Titel und Nachricht müssen ausgefüllt werden.');
+    return; // Beendet die Funktion frühzeitig, wenn Validierung fehlschlägt
+  }
+  fetch('/auth/user')
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error('Nicht authentifiziert');
+      }
+    })
+    .then(data => {
+      userName = data.username;
+      userEmail = data.email;
+      console.log(userName + userEmail);
+
+      // API_BASE_URL is here: api
+      return fetch(`${API_BASE_URL}/user?email=${userEmail}&username=${userName}&apiKey=${API_KEY}`);
+    })
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error('Nicht authentifiziert');
+      }
+    })
+    .then(data => {
+      let userId = data.id;
+      console.log(userId);
+
+      // Erfassen Sie die Werte aus beiden Eingabefeldern
+  let title = document.getElementById('title').value;
+  let text = document.getElementById('message').value;
+
+  // Stellen Sie sicher, dass 'userId' korrekt aus vorherigen Schritten erfasst wird
+  // Senden Sie die Anfrage mit Titel und Text
+    return fetch(`${API_BASE_URL}/post?apiKey=${API_KEY}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      userId: userId, // userId bleibt unverändert
+      title: title, // Fügen Sie den Titel hinzu
+      body: text // Ändern Sie `text` zu `body`, um mit dem Backend übereinzustimmen
+    })
+  })
+  .then(response => {
+  if (response.ok) {
+    console.log('Nachricht gesendet');
+    document.getElementById('title').value = ''; // Titelfeld leeren
+    document.getElementById('message').value = ''; // Nachrichtenfeld leeren
+    return response.json(); // Verarbeiten Sie die JSON-Antwort weiter
+  } else {
+    // Überprüfen, ob die Antwort im JSON-Format ist
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.indexOf("application/json") !== -1) {
+      return response.json().then(data => {
+        // Hier können Sie auf die JSON-Daten zugreifen und eine Fehlermeldung anzeigen
+        throw new Error(data.message || "Ein unbekannter Fehler ist aufgetreten");
+      });
+    } else {
+      // Behandeln Sie Nicht-JSON-Antworten
+      return response.text().then(text => {
+        throw new Error(text || "Ein unbekannter Fehler ist aufgetreten");
+      });
+    }
+  }
+})
+.catch(error => {
+  console.error('Fehler beim Senden der Nachricht: ', error);
+  console.log(userId + title + text);
+});
+
+  })
+  .catch(error => {
+    console.error('Fehler beim Senden der Nachricht: ', error);
+    console.log(userId + title + text);
+  });
+}
+</script>
 
 </body>
 </html>

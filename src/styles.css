@@ -19,6 +19,49 @@ body {
     }
 }
 
+/* Zusätzliche Stilisierungen für User-Liste und Chat-Bereiche */
+.user-list, .chat__output {
+    background-color: rgba(0, 255, 255, 0.2); /* Halbtransparentes Türkis */
+    border: 2px solid rgba(0, 255, 255, 0.6); /* Leuchtender türkiser Rand */
+    padding: 20px; /* Innenabstand */
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5), 0 0 20px rgba(0, 255, 255, 0.5); /* Leuchtender Schatten für den Neon-Effekt */
+    border-radius: 10px; /* Abgerundete Ecken */
+    display: flex; /* Aktiviert Flexbox */
+    flex-direction: column; /* Stapelt die Kinder vertikal */
+    align-items: center; /* Zentriert die Kinder horizontal */
+    gap: 10px; /* Abstand zwischen den Kind-Elementen */
+    margin: 8px auto; /* Zentriert horizontal mit automatischen Seitenrändern */
+    max-width: 500px; /* Maximale Breite */
+}
+
+/* Anpassungen für den Eingabebereich, um ihn ähnlich zu zentrieren */
+.chat__input  {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Zentriert die Eingabeelemente horizontal */
+    gap: 10px; /* Abstand zwischen den Eingabeelementen */
+    padding: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px; /* Fügt oben und unten einen Abstand hinzu */
+    width: 100%;
+    max-width: 500px; /* Maximale Breite */
+    border-radius: 10px; /* Abgerundete Ecken */
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5), 0 0 20px rgba(0, 255, 255, 0.5); /* Leuchtender Schatten */
+    background-color: rgba(0, 255, 255, 0.1); /* Leicht transparenter Hintergrund */
+}
+
+/* Stil-Anpassungen für die Texteingabefelder */
+.chat__input input[type="text"] {
+    width: 100%; /* Ermöglicht die volle Breitennutzung */
+    margin: 5px 0; /* Fügt einen kleinen Abstand zwischen den Feldern hinzu */
+}
+
+/* Erhöht die Sichtbarkeit und das Design des Senden-Buttons */
+.chat__input button {
+    width: auto;
+    padding: 10px 20px;
+    margin: 10px 0; /* Fügt oben und unten einen Abstand hinzu */
+}
 
 
 /* Stil für den Nutzerprofil-Container */
