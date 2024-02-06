@@ -1,6 +1,27 @@
 /* Zwitschern Chat Frontend Styles */
+/* Zentriert den Inhalt der gesamten Seite */
 body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Verwendet die gesamte Höhe des Viewports */
+    margin: 0; /* Entfernt den Standard-Margin */
     font-family: 'Comic Sans MS', sans-serif;
+    background-color: #f0f0f0; /* Hintergrundfarbe der Seite, optional */
+}
+
+/* Stil für den Nutzerprofil-Container */
+#user-profile {
+    background-color: rgba(0, 255, 255, 0.2); /* Halbtransparentes Türkis */
+    border: 2px solid rgba(0, 255, 255, 0.6); /* Leuchtender türkiser Rand */
+    padding: 20px; /* Innenabstand */
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5), 0 0 20px rgba(0, 255, 255, 0.5); /* Leuchtender Schatten für den Neon-Effekt */
+    border-radius: 10px; /* Abgerundete Ecken */
+    display: flex; /* Aktiviert Flexbox für diesen Container */
+    flex-direction: column; /* Stapelt die Kinder vertikal */
+    align-items: center; /* Zentriert die Kinder horizontal */
+    gap: 10px; /* Abstand zwischen den Kind-Elementen */
 }
 
 /* Background */
