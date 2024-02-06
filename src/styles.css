@@ -1,15 +1,25 @@
 /* Zwitschern Chat Frontend Styles */
 /* Zentriert den Inhalt der gesamten Seite */
+/* Standard-Stil für mobile Geräte */
 body {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start; /* Standard-Einstellung für mobile Geräte */
     align-items: center;
-    height: 100vh; /* Verwendet die gesamte Höhe des Viewports */
-    margin: 0; /* Entfernt den Standard-Margin */
+    height: 100vh;
+    margin: 0;
     font-family: 'Comic Sans MS', sans-serif;
-    background-color: #f0f0f0; /* Hintergrundfarbe der Seite, optional */
+    background-color: #f0f0f0;
 }
+
+/* Media Queries für Tablet und PC */
+@media (min-width: 768px) {
+    body {
+        justify-content: center; /* Zentriert den Inhalt für Tablets und PCs */
+    }
+}
+
+
 
 /* Stil für den Nutzerprofil-Container */
 #user-profile {
@@ -22,6 +32,7 @@ body {
     flex-direction: column; /* Stapelt die Kinder vertikal */
     align-items: center; /* Zentriert die Kinder horizontal */
     gap: 10px; /* Abstand zwischen den Kind-Elementen */
+    margin: 8px;
 }
 
 /* Background */
@@ -63,6 +74,7 @@ body {
     box-shadow: 0 0 10px rgba(0, 255, 255, 0.5), 0 0 20px rgba(0, 255, 255, 0.5);
     width: auto;
     height: 3vh;
+    margin: 8px;
 }
 .header__text {
     display: flex;
@@ -102,5 +114,25 @@ body {
 
     .header__subtitle {
         font-size: 2vh;
+    }
+}
+
+/* Media Queries for Tablet and iPad */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .zwitschern-chat-logo, .account {
+        height: 10vh; 
+        width: auto;
+    }
+
+    .header {
+        height: 10vh; 
+    }
+
+    .header__title {
+        font-size: 3vh;
+    }
+
+    .header__subtitle {
+        font-size: 1.5vh;
     }
 }
