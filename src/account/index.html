@@ -20,10 +20,35 @@
   <img src="../assets/logout.png" alt="Account" class="account" onclick="window.location.href='https://zwitschern.chat/auth/logout'">
 </div>
 
+<div id="user-name-display"></div>
+
 
 <script>
-
-</script>
+    // Funktion um Nutzerdaten vom Server abzufragen
+    function fetchUserData() {
+      fetch('/auth/user')
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error('Nicht authentifiziert');
+          }
+        })
+        .then(data => {
+          // Nutzerdaten erfolgreich abgerufen, aktualisieren Sie das Frontend
+          document.getElementById('user-name-display').textContent = `Eingeloggt als: ${data.username}`;
+        })
+        .catch(error => {
+          console.error('Fehler beim Abrufen der Nutzerdaten:', error);
+          document.getElementById('user-name-display').textContent = 'Nicht eingeloggt';
+          window.location.href = 'https://zwitschern.chat/auth/login';
+        });
+    }
+  
+    // Rufen Sie die Funktion beim Laden der Seite auf
+    window.onload = fetchUserData;
+  </script>
+  
 
 <!-- <iframe width="560" height="315" src='https://dbdiagram.io/embed/653a5a78ffbf5169f08363f4'> </iframe> -->
 
