@@ -12,7 +12,7 @@
 <!-- Header of Website -->
 <div class="header">
     <!-- Logo of Website -->
-  <img src="../assets/Zwitschern.Chat_LOGO.png" alt="Logo" class="zwitschern-chat-logo" onclick="window.location.href='https://zwitschern.chat/'">
+  <img src="../assets/Zwitschern.Chat_LOGO.png" alt="Logo" class="zwitschern-chat-logo" onclick="history.back()" />
   <div class="header__text">
     <div class="header__title">ZWITSCHERN.CHAT</div>
     <div class="header__subtitle">DER CHAT FÜR ALLE!</div>
@@ -29,7 +29,7 @@
 </div>
 
 <script>
-  // Funktion um Nutzerdaten vom Server abzufragen
+  if (!window.location.hostname.includes('localhost')) {
   function fetchUserData() {
     fetch('/auth/user')
       .then(response => {
@@ -52,8 +52,7 @@
         fetchUserRole(data.email);
       })
       .catch(error => {
-        console.error('Fehler beim Abrufen der Nutzerdaten:', error);
-        document.getElementById('user-name-display').textContent = 'Nicht eingeloggt';
+        console.error('Keine Nutzerdaten vorhanden:', error);
         window.location.href = 'https://zwitschern.chat/auth/login';
       });
   }
@@ -85,6 +84,12 @@ const API_KEY = 'Fen4GC6KRjmt';
 
   // Rufen Sie die Funktion beim Laden der Seite auf
   window.onload = fetchUserData;
+} else {
+  document.getElementById('user-name-display').textContent = 'Nicht eingeloggt';
+  document.getElementById('user-profile-picture').src = 'https://via.placeholder.com/100';
+  document.getElementById('user-email-display').textContent = 'E-Mail: Nicht verfügbar';
+  document.getElementById('user-role-display').textContent = 'Rolle: Nicht verfügbar';
+}
 </script>
 
 </body>
