@@ -53,38 +53,13 @@
         if(data.email) {
           document.getElementById('user-email-display').textContent = `E-Mail: ${data.email}`;
         }
-        // Zusätzliche API-Anfrage um die Rolle des Nutzers abzufragen
-        fetchUserRole(data.email);
+
       })
       .catch(error => {
         console.error('Keine Nutzerdaten vorhanden:', error);
         window.location.href = 'https://zwitschern.chat/auth/login';
       });
   }
-
-  // Funktion, um die Rolle des Nutzers über die API abzufragen
-  function fetchUserRole(email) {
-// Setze die Basis-URL basierend auf dem Hostnamen der Seite
-const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:3000/api' : 'https://zwitschern.chat/api';
-
-
-    const apiUrl = `${API_BASE_URL}/users?email=${encodeURIComponent(email)}`;
-    fetch(apiUrl)
-      .then(response => response.json())
-      .then(data => {
-        const user = data.find(user => user.email === email);
-        if(user && user.role) {
-          document.getElementById('user-role-display').textContent = `Rolle: ${user.role}`;
-        } else {
-          document.getElementById('user-role-display').textContent = 'Rolle: Nicht verfügbar';
-        }
-      })
-      .catch(error => {
-        console.error('Fehler beim Abrufen der Nutzerrolle:', error);
-        document.getElementById('user-role-display').textContent = 'Rolle: Fehler beim Abrufen';
-      });
-  }
-
   // Rufen Sie die Funktion beim Laden der Seite auf
   window.onload = fetchUserData;
 } else {
