@@ -98,80 +98,70 @@ async function sendMessage() {
     return; // Beendet die Funktion frühzeitig, wenn Validierung fehlschlägt
   }
   fetch('/auth/user')
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        throw new Error('Nicht authentifiziert');
-      }
-    })
-    .then(data => {
-      userName = data.username;
-      userEmail = data.email;
-      console.log(userName + userEmail);
+  .then(response => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      throw new Error('Nicht authentifiziert');
+    }
+  })
+  .then(data => {
+    // Passen Sie die Variablenzuweisungen an die tatsächlichen Schlüssel im Nutzerobjekt an
+    let userName = data.nickname || data.name; // Verwenden Sie `nickname` oder `name`
+    let userEmail = data.email;
 
-      // API_BASE_URL is here: api
-      return fetch(`${API_BASE_URL}/user?email=${userEmail}&username=${userName}`);
-    })
-    .then(response => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        throw new Error('Nicht authentifiziert');
-      }
-    })
-    .then(data => {
-      let userId = data.id;
-      console.log(userId);
+    console.log(userName + userEmail);
 
-      // Erfassen Sie die Werte aus beiden Eingabefeldern
-  let title = document.getElementById('title').value;
-  let text = document.getElementById('message').value;
-
-  // Stellen Sie sicher, dass 'userId' korrekt aus vorherigen Schritten erfasst wird
-  // Senden Sie die Anfrage mit Titel und Text
-    return fetch(`${API_BASE_URL}/post`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      userId: userId, // userId bleibt unverändert
-      title: title, // Fügen Sie den Titel hinzu
-      body: text // Ändern Sie `text` zu `body`, um mit dem Backend übereinzustimmen
-    })
+    // Verwenden Sie die aktualisierten Variablen, um die nächste Anfrage zu machen
+    return fetch(`${API_BASE_URL}/user?email=${userEmail}&username=${userName}`);
   })
   .then(response => {
-  if (response.ok) {
-    console.log('Nachricht gesendet');
-    document.getElementById('title').value = ''; // Titelfeld leeren
-    document.getElementById('message').value = ''; // Nachrichtenfeld leeren
-    return response.json(); // Verarbeiten Sie die JSON-Antwort weiter
-  } else {
-    // Überprüfen, ob die Antwort im JSON-Format ist
-    const contentType = response.headers.get("content-type");
-    if (contentType && contentType.indexOf("application/json") !== -1) {
-      return response.json().then(data => {
-        // Hier können Sie auf die JSON-Daten zugreifen und eine Fehlermeldung anzeigen
-        throw new Error(data.message || "Ein unbekannter Fehler ist aufgetreten");
-      });
+    if (response.ok) {
+      return response.json();
     } else {
-      // Behandeln Sie Nicht-JSON-Antworten
-      return response.text().then(text => {
-        throw new Error(text || "Ein unbekannter Fehler ist aufgetreten");
-      });
+      throw new Error('Nicht authentifiziert');
     }
-  }
-})
-.catch(error => {
-  console.error('Fehler beim Senden der Nachricht: ', error);
-  console.log(userId + title + text);
-});
+  })
+  .then(data => {
+    let userId = data.id;
+    console.log(userId);
 
+    // Erfassen Sie die Werte aus beiden Eingabefeldern
+    let title = document.getElementById('title').value;
+    let text = document.getElementById('message').value;
+
+    // Senden Sie die Anfrage mit Titel und Text
+    return fetch(`${API_BASE_URL}/post`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userId: userId,
+        title: title,
+        body: text // Stellen Sie sicher, dass der Schlüssel `body` dem erwarteten Schlüssel im Backend entspricht
+      })
+    })
+    .then(response => {
+      if (response.ok) {
+        console.log('Nachricht gesendet');
+        // Leeren Sie die Eingabefelder nach erfolgreichem Senden
+        document.getElementById('title').value = '';
+        document.getElementById('message').value = '';
+        return response.json();
+      } else {
+        // Fehlerbehandlung für die Antwort
+        return response.json().then(data => {
+          throw new Error(data.message || "Ein unbekannter Fehler ist aufgetreten");
+        });
+      }
+    })
+    .catch(error => {
+      console.error('Fehler beim Senden der Nachricht: ', error);
+    });
   })
   .catch(error => {
     console.error('Fehler beim Senden der Nachricht: ', error);
-    console.log(userId + title + text);
   });
 }
 </script>

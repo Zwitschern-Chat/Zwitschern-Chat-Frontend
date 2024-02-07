@@ -46,14 +46,14 @@
       })
       .then(data => {
         // Nutzerdaten erfolgreich abgerufen, aktualisieren Sie das Frontend
-        document.getElementById('user-name-display').textContent = `Nutername: ${data.username}`;
-        if(data.profilePictureUrl) {
-          document.getElementById('user-profile-picture').src = data.profilePictureUrl;
+        // Stellen Sie sicher, dass die Schlüsselnamen mit denen im `req.oidc.user` Objekt übereinstimmen
+        document.getElementById('user-name-display').textContent = `Nutzername: ${data.nickname || data.name}`; // `nickname` wird bevorzugt verwendet, ansonsten `name`
+        if(data.picture) {
+          document.getElementById('user-profile-picture').src = data.picture; // Verwenden Sie `picture` für das Profilbild
         }
         if(data.email) {
-          document.getElementById('user-email-display').textContent = `E-Mail: ${data.email}`;
+          document.getElementById('user-email-display').textContent = `E-Mail: ${data.email}`; // `email` bleibt gleich
         }
-
       })
       .catch(error => {
         console.error('Keine Nutzerdaten vorhanden:', error);
