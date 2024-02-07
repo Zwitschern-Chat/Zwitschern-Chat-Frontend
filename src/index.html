@@ -25,16 +25,13 @@
   <div class="user-list__header">Nutzer-Liste: </div>
   <div class="user-list__user">
     <div id="user-list">
-      <!-- Hier werden die Nutzernamen eingeblendet -->
     </div>
   </div>
 </div>
 
 <!-- Chat Test Placeholder-->
 <div class="chat__input">
-  <!-- Neues Eingabefeld für den Titel -->
   <input type="text" id="title" placeholder="Titel" required>
-  <!-- Aktualisiertes Eingabefeld für den Text -->
   <input type="text" id="message" placeholder="Nachricht" required>
   <button type="button" onclick="sendMessage()">Senden</button>
 </div>
@@ -44,21 +41,19 @@
   <div class="chat__output__header">Nachrichten: </div>
   <div class="chat__output__post">
     <div id="chat__output">
-      <!-- Hier werden die Nachrichten eingeblendet -->
     </div>
   </div>
 
+  
 <script>
 // Setze die Basis-URL basierend auf dem Hostnamen der Seite
 const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:3000/api' : 'https://zwitschern.chat/api';
 
-// Ihr fester API-Schlüssel
-const API_KEY = 'Fen4GC6KRjmt';
 
 // Funktion, um Nutzerdaten vom Server zu holen
 async function fetchUsernames() {
   try {
-    const url = `${API_BASE_URL}/users?apiKey=${API_KEY}`;
+    const url = `${API_BASE_URL}/users`;
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -77,7 +72,7 @@ fetchUsernames();
 
 async function fetchPosts() {
   try {
-    const url = `${API_BASE_URL}/posts?apiKey=${API_KEY}`;
+    const url = `${API_BASE_URL}/posts`;
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -116,7 +111,7 @@ async function sendMessage() {
       console.log(userName + userEmail);
 
       // API_BASE_URL is here: api
-      return fetch(`${API_BASE_URL}/user?email=${userEmail}&username=${userName}&apiKey=${API_KEY}`);
+      return fetch(`${API_BASE_URL}/user?email=${userEmail}&username=${userName}`);
     })
     .then(response => {
       if (response.ok) {
@@ -135,7 +130,7 @@ async function sendMessage() {
 
   // Stellen Sie sicher, dass 'userId' korrekt aus vorherigen Schritten erfasst wird
   // Senden Sie die Anfrage mit Titel und Text
-    return fetch(`${API_BASE_URL}/post?apiKey=${API_KEY}`, {
+    return fetch(`${API_BASE_URL}/post`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

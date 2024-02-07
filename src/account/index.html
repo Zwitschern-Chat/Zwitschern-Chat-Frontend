@@ -67,10 +67,8 @@
 // Setze die Basis-URL basierend auf dem Hostnamen der Seite
 const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:3000/api' : 'https://zwitschern.chat/api';
 
-// Ihr fester API-Schlüssel
-const API_KEY = 'Fen4GC6KRjmt';
 
-    const apiUrl = `${API_BASE_URL}/users?apiKey=${API_KEY}&email=${encodeURIComponent(email)}`;
+    const apiUrl = `${API_BASE_URL}/users?email=${encodeURIComponent(email)}`;
     fetch(apiUrl)
       .then(response => response.json())
       .then(data => {
