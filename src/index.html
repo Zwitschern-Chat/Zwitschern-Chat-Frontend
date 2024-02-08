@@ -41,20 +41,30 @@ const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhos
 
 // Funktion, um Nachrichten zu senden
 async function sendMessage() {
-  let text = document.getElementById('message').value;
+  let message = document.getElementById('message').value;
 
   // Validierung hinzufügen
-  if (!text) {
-    console.error('Nachrichttext muss ausgefüllt werden.');
+  if (!message) {
     return; // Beendet die Funktion frühzeitig, wenn Validierung fehlschlägt
+  } else {
+    // Do prevent sql injection, xss and other attacks here 
+    message = DOMPurify.sanitize(message);
+    message = message.trim();
+    message = message.replace(/\s+/g, ' ');
+    message = message.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    message = message.replace(/&/g, '&amp;');
+    message = message.replace(/"/g, '&quot;');
+    message = message.replace(/'/g, '&#x27;');
+    message = message.replace(/`/g, '&#x60;');
+    message = message.replace(/=/g, '&#x3D;');
+    // TODO: Add more validation here     
   }
+
   fetch('/auth/user')
   .then(response => {
     if (response.ok) {
       return response.json();
-    } else {
-      throw new Error('Nicht authentifiziert');
-    }
+    } 
   })
   .then(data => {
     const sub = data.sub;
@@ -65,15 +75,13 @@ async function sendMessage() {
   .then(response => {
     if (response.ok) {
       return response.json();
-    } else {
-      throw new Error('Nicht authentifiziert');
     }
   })
   .then(data => {
     const user_number = data.number;
     console.log(user_number);
 
-    let message = document.getElementById('message').value;
+
 
     // Senden Sie die Anfrage mit Titel und Text
     return fetch(`${API_BASE_URL}/api/post`, {
@@ -107,7 +115,9 @@ async function sendMessage() {
     });
   })
   .catch(error => {
-    console.error('Fehler beim Senden der Nachricht: ', error);
+    // Redirect to login page if not authenticated
+    window.location.href = 'https://zwitschern.chat/auth/login';
+    console.error('Nicht authentifiziert:', error);
   });
 }
 
