@@ -91,7 +91,8 @@ async function sendMessage() {
         console.log('Nachricht gesendet');
         // Leeren Sie die Eingabefelder nach erfolgreichem Senden
         document.getElementById('message').value = '';
-        // TODO refresh posts
+        // Update the chat with the new message
+        fetchPosts();
 
         return response.json();
       } else {
