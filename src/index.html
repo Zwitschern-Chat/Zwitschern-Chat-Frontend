@@ -79,7 +79,7 @@ async function fetchPosts() {
     }
     const data = await response.json();
     const postList = document.getElementById('chat__output');
-    const posts = data.map(post => `<div class="post"><h3>${post.title}</h3><p>${post.body}</p></div>`).join('');
+    const posts = data.map(post => `<div class="post"><p>${post.body}</p></div>`).join('');
     postList.innerHTML = posts;    
   } catch (error) {
     console.error('Es gab ein Problem mit der Fetch-Anfrage:', error);
@@ -89,12 +89,11 @@ fetchPosts();
 
 
 async function sendMessage() {
-  let title = document.getElementById('title').value;
   let text = document.getElementById('message').value;
 
   // Validierung hinzufügen
-  if (!title || !text) {
-    console.error('Titel und Nachricht müssen ausgefüllt werden.');
+  if (!text) {
+    console.error('Nachrichttext muss ausgefüllt werden.');
     return; // Beendet die Funktion frühzeitig, wenn Validierung fehlschlägt
   }
   fetch('/auth/user')
@@ -126,8 +125,6 @@ async function sendMessage() {
     let userId = data.id;
     console.log(userId);
 
-    // Erfassen Sie die Werte aus beiden Eingabefeldern
-    let title = document.getElementById('title').value;
     let text = document.getElementById('message').value;
 
     // Senden Sie die Anfrage mit Titel und Text
@@ -138,7 +135,6 @@ async function sendMessage() {
       },
       body: JSON.stringify({
         userId: userId,
-        title: title,
         body: text // Stellen Sie sicher, dass der Schlüssel `body` dem erwarteten Schlüssel im Backend entspricht
       })
     })
@@ -146,7 +142,6 @@ async function sendMessage() {
       if (response.ok) {
         console.log('Nachricht gesendet');
         // Leeren Sie die Eingabefelder nach erfolgreichem Senden
-        document.getElementById('title').value = '';
         document.getElementById('message').value = '';
         return response.json();
       } else {
