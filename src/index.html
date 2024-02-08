@@ -48,7 +48,6 @@ async function sendMessage() {
     return; // Beendet die Funktion frühzeitig, wenn Validierung fehlschlägt
   } else {
     // Do prevent sql injection, xss and other attacks here 
-    message = DOMPurify.sanitize(message);
     message = message.trim();
     message = message.replace(/\s+/g, ' ');
     message = message.replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -57,6 +56,7 @@ async function sendMessage() {
     message = message.replace(/'/g, '&#x27;');
     message = message.replace(/`/g, '&#x60;');
     message = message.replace(/=/g, '&#x3D;');
+    console.log(message);
     // TODO: Add more validation here     
   }
 
