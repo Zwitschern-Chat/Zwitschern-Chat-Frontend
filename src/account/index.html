@@ -25,49 +25,97 @@
   <img id="user-profile-picture" src="" alt=" " style="width: 100px; height: 100px; border-radius: 50%;">
   <div id="user-name-display"></div>
   <div id="user-email-display"></div>
-  <div id="user-role-display"></div>
+  <div id="user-creation-date-display"></div>
+  <div id="user-bio-display"></div>
+  <div id="user-language-display"></div>
 </div>
 
 <script>
+  // Hilfsfunktion, um den Benutzer zur Startseite zu leiten
   function redirectToHome() {
     var baseUrl = window.location.href.split('/account')[0];
     window.location.href = baseUrl;
 }
 
-  if (!window.location.hostname.includes('localhost')) {
-  function fetchUserData() {
-    fetch('/auth/user')
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error('Nicht authentifiziert');
-        }
-      })
-      .then(data => {
-        // Nutzerdaten erfolgreich abgerufen, aktualisieren Sie das Frontend
-        // Stellen Sie sicher, dass die Schlüsselnamen mit denen im `req.oidc.user` Objekt übereinstimmen
-        document.getElementById('user-name-display').textContent = `Nutzername: ${data.nickname || data.name}`; // `nickname` wird bevorzugt verwendet, ansonsten `name`
-        if(data.picture) {
-          document.getElementById('user-profile-picture').src = data.picture; // Verwenden Sie `picture` für das Profilbild
-        }
-        if(data.email) {
-          document.getElementById('user-email-display').textContent = `E-Mail: ${data.email}`; // `email` bleibt gleich
-        }
-      })
-      .catch(error => {
-        console.error('Keine Nutzerdaten vorhanden:', error);
-        window.location.href = 'https://zwitschern.chat/auth/login';
-      });
-  }
+
+// only fetch user data if not on localhost
+if (!window.location.hostname.includes('localhost')) {
   // Rufen Sie die Funktion beim Laden der Seite auf
-  window.onload = fetchUserData;
+  window.onload = fetchAuthUserData;
 } else {
-  document.getElementById('user-name-display').textContent = 'Nicht eingeloggt';
   document.getElementById('user-profile-picture').src = 'https://via.placeholder.com/100';
+  document.getElementById('user-name-display').textContent = 'Nicht eingeloggt';
   document.getElementById('user-email-display').textContent = 'E-Mail: Nicht verfügbar';
   document.getElementById('user-role-display').textContent = 'Rolle: Nicht verfügbar';
+  document.getElementById('user-creation-date-display').textContent = 'Erstellt am: Nicht verfügbar';
+  document.getElementById('user-bio-display').textContent = 'Bio: Nicht verfügbar';
+  document.getElementById('user-language-display').textContent = 'Sprache: Nicht verfügbar';
 }
+
+
+
+// Funktion, um Nutzerdaten vom Auth-Server zu holen  
+function fetchAuthUserData() {
+  fetch('/auth/user')
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error('Nicht authentifiziert');
+      }
+    })
+    .then(data => {
+      document.getElementById('user-name-display').textContent = `Nutzername: ${data.nickname || data.name}`;
+      if(data.picture) {
+        document.getElementById('user-profile-picture').src = data.picture;
+      }
+      if(data.email) {
+        document.getElementById('user-email-display').textContent = `E-Mail: ${data.email}`;
+      }
+      // Hier rufst du fetchApiUserData mit der user id (sub) auf
+      if(data.sub) {
+        fetchApiUserData(data.sub);
+      }
+    })
+    .catch(error => {
+      console.error('Keine Nutzerdaten vorhanden:', error);
+      window.location.href = 'https://zwitschern.chat/auth/login';
+    });
+}
+
+  // Funktion, um Nutzerdaten vom API-Server zu holen
+  function fetchApiUserData(userId) {
+  fetch(`/api/user/${userId}`)
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error('Nutzerdaten konnten nicht abgerufen werden');
+      }
+    })
+    .then(data => {
+      document.getElementById('user-creation-date-display').textContent = `Erstellt am: ${new Date(data.created_at).toLocaleDateString()}`; 
+      if(data.bio) {
+        document.getElementById('user-bio-display').textContent = `Bio: ${data.bio}`; 
+      } else {
+        document.getElementById('user-bio-display').textContent = 'Bio: Noch nicht angegeben';
+      }
+      if(data.language) {
+        document.getElementById('user-language-display').textContent = `Sprache: ${data.language}`; 
+      } else {
+        document.getElementById('user-language-display').textContent = 'Sprache: Noch nicht angegeben';
+      }
+
+
+    })
+    .catch(error => {
+      console.error('Fehler beim Abrufen der Nutzerdaten:', error);
+    });
+}
+
+
+
+
 </script>
 
 </body>

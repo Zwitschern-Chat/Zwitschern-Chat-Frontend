@@ -65,10 +65,10 @@ async function fetchUsernames() {
     console.error('Es gab ein Problem mit der Fetch-Anfrage:', error);
   }
 }
-
-// Aufrufen der Funktion beim Laden der Seite
 fetchUsernames();
+// ende
 
+// Funktion, um Nachrichten vom Server zu holen
 async function fetchPosts() {
   try {
     const url = `${API_BASE_URL}/posts`;
@@ -85,8 +85,9 @@ async function fetchPosts() {
   }
 }
 fetchPosts();
+// ende
 
-
+// Funktion, um Nachrichten zu senden
 async function sendMessage() {
   let text = document.getElementById('message').value;
 
