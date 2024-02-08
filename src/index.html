@@ -78,7 +78,7 @@ async function fetchPosts() {
     }
     const data = await response.json();
     const postList = document.getElementById('chat__output');
-    const posts = data.map(post => `<div class="post"><p>${post.body}</p></div>`).join('');
+    const posts = data.map(post => `<div class="post"><p>${post.message}</p></div>`).join('');
     postList.innerHTML = posts;    
   } catch (error) {
     console.error('Es gab ein Problem mit der Fetch-Anfrage:', error);
@@ -134,7 +134,7 @@ async function sendMessage() {
       },
       body: JSON.stringify({
         userId: userId,
-        body: text // Stellen Sie sicher, dass der Schlüssel `body` dem erwarteten Schlüssel im Backend entspricht
+        message: text // Stellen Sie sicher, dass der Schlüssel `body` dem erwarteten Schlüssel im Backend entspricht
       })
     })
     .then(response => {
