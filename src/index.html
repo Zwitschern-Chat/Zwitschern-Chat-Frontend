@@ -76,7 +76,7 @@ async function sendMessage() {
     let message = document.getElementById('message').value;
 
     // Senden Sie die Anfrage mit Titel und Text
-    return fetch(`${API_BASE_URL}/post`, {
+    return fetch(`${API_BASE_URL}/api/post`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -113,7 +113,7 @@ async function sendMessage() {
 // Funktion, um Nachrichten vom Server zu holen
 async function fetchPosts() {
   try {
-    const url = `${API_BASE_URL}/posts`;
+    const url = `${API_BASE_URL}/api/posts`;
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
