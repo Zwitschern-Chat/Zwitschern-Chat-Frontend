@@ -53,7 +53,6 @@ async function sendMessage() {
     if (response.ok) {
       return response.json();
     } else {
-      window.location.href = 'https://zwitschern.chat/auth/login';
       throw new Error('Nicht authentifiziert');
     }
   })
@@ -67,7 +66,6 @@ async function sendMessage() {
     if (response.ok) {
       return response.json();
     } else {
-      window.location.href = 'https://zwitschern.chat/auth/login';
       throw new Error('Nicht authentifiziert');
     }
   })
