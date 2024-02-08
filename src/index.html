@@ -36,7 +36,7 @@
   
 <script>
 // Setze die Basis-URL basierend auf dem Hostnamen der Seite
-const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:3000/api' : 'https://zwitschern.chat/api';
+const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:3000/' : 'https://zwitschern.chat/';
 
 
 // Funktion, um Nachrichten zu senden
@@ -60,7 +60,7 @@ async function sendMessage() {
     const sub = data.sub;
 
     // Verwenden Sie die aktualisierten Variablen, um die nächste Anfrage zu machen
-    return fetch(`${API_BASE_URL}/user?sub=${sub}`);
+    return fetch(`${API_BASE_URL}/api/user/${sub}`);
   })
   .then(response => {
     if (response.ok) {
