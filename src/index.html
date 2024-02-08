@@ -20,15 +20,6 @@
   <img src="assets/account.png" alt="Account" class="account" style="display: none;" onclick="window.location.href='https://zwitschern.chat/auth/account'">
 </div>
 
-<!-- User List Test Placeholder -->
-<div class="user-list">
-  <div class="user-list__header">Nutzer-Liste: </div>
-  <div class="user-list__user">
-    <div id="user-list">
-    </div>
-  </div>
-</div>
-
 <!-- Chat Test Placeholder-->
 <div class="chat__input">
   <input type="text" id="message" placeholder="Nachricht" required>
@@ -37,7 +28,6 @@
 
 <!-- Chat Test Placeholder-->
 <div class="chat__output">
-  <div class="chat__output__header">Nachrichten: </div>
   <div class="chat__output__post">
     <div id="chat__output">
     </div>
@@ -49,24 +39,78 @@
 const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:3000/api' : 'https://zwitschern.chat/api';
 
 
-// Funktion, um Nutzerdaten vom Server zu holen
-async function fetchUsernames() {
-  try {
-    const url = `${API_BASE_URL}/users`;
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    const userList = document.getElementById('user-list');
-    const usernames = data.map(user => user.username).join('<br>');
-    userList.innerHTML = usernames;
-  } catch (error) {
-    console.error('Es gab ein Problem mit der Fetch-Anfrage:', error);
+// Funktion, um Nachrichten zu senden
+async function sendMessage() {
+  let text = document.getElementById('message').value;
+
+  // Validierung hinzufügen
+  if (!text) {
+    console.error('Nachrichttext muss ausgefüllt werden.');
+    return; // Beendet die Funktion frühzeitig, wenn Validierung fehlschlägt
   }
+  fetch('/auth/user')
+  .then(response => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      window.location.href = 'https://zwitschern.chat/auth/login';
+      throw new Error('Nicht authentifiziert');
+    }
+  })
+  .then(data => {
+    const sub = data.sub;
+
+    // Verwenden Sie die aktualisierten Variablen, um die nächste Anfrage zu machen
+    return fetch(`${API_BASE_URL}/user?sub=${sub}`);
+  })
+  .then(response => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      window.location.href = 'https://zwitschern.chat/auth/login';
+      throw new Error('Nicht authentifiziert');
+    }
+  })
+  .then(data => {
+    const user_number = data.number;
+    console.log(user_number);
+
+    let message = document.getElementById('message').value;
+
+    // Senden Sie die Anfrage mit Titel und Text
+    return fetch(`${API_BASE_URL}/post`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        user_number: user_number,
+        message: message 
+      })
+    })
+    .then(response => {
+      if (response.ok) {
+        console.log('Nachricht gesendet');
+        // Leeren Sie die Eingabefelder nach erfolgreichem Senden
+        document.getElementById('message').value = '';
+        // TODO refresh posts
+
+        return response.json();
+      } else {
+        // Fehlerbehandlung für die Antwort
+        return response.json().then(data => {
+          throw new Error(data.message || "Ein unbekannter Fehler ist aufgetreten");
+        });
+      }
+    })
+    .catch(error => {
+      console.error('Fehler beim Senden der Nachricht: ', error);
+    });
+  })
+  .catch(error => {
+    console.error('Fehler beim Senden der Nachricht: ', error);
+  });
 }
-fetchUsernames();
-// ende
 
 // Funktion, um Nachrichten vom Server zu holen
 async function fetchPosts() {
@@ -87,78 +131,7 @@ async function fetchPosts() {
 fetchPosts();
 // ende
 
-// Funktion, um Nachrichten zu senden
-async function sendMessage() {
-  let text = document.getElementById('message').value;
 
-  // Validierung hinzufügen
-  if (!text) {
-    console.error('Nachrichttext muss ausgefüllt werden.');
-    return; // Beendet die Funktion frühzeitig, wenn Validierung fehlschlägt
-  }
-  fetch('/auth/user')
-  .then(response => {
-    if (response.ok) {
-      return response.json();
-    } else {
-      throw new Error('Nicht authentifiziert');
-    }
-  })
-  .then(data => {
-    // Passen Sie die Variablenzuweisungen an die tatsächlichen Schlüssel im Nutzerobjekt an
-    let userName = data.nickname || data.name; // Verwenden Sie `nickname` oder `name`
-    let userEmail = data.email;
-
-    console.log(userName + userEmail);
-
-    // Verwenden Sie die aktualisierten Variablen, um die nächste Anfrage zu machen
-    return fetch(`${API_BASE_URL}/user?email=${userEmail}&username=${userName}`);
-  })
-  .then(response => {
-    if (response.ok) {
-      return response.json();
-    } else {
-      throw new Error('Nicht authentifiziert');
-    }
-  })
-  .then(data => {
-    let userId = data.id;
-    console.log(userId);
-
-    let text = document.getElementById('message').value;
-
-    // Senden Sie die Anfrage mit Titel und Text
-    return fetch(`${API_BASE_URL}/post`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        userId: userId,
-        message: text // Stellen Sie sicher, dass der Schlüssel `body` dem erwarteten Schlüssel im Backend entspricht
-      })
-    })
-    .then(response => {
-      if (response.ok) {
-        console.log('Nachricht gesendet');
-        // Leeren Sie die Eingabefelder nach erfolgreichem Senden
-        document.getElementById('message').value = '';
-        return response.json();
-      } else {
-        // Fehlerbehandlung für die Antwort
-        return response.json().then(data => {
-          throw new Error(data.message || "Ein unbekannter Fehler ist aufgetreten");
-        });
-      }
-    })
-    .catch(error => {
-      console.error('Fehler beim Senden der Nachricht: ', error);
-    });
-  })
-  .catch(error => {
-    console.error('Fehler beim Senden der Nachricht: ', error);
-  });
-}
 </script>
 
 </body>

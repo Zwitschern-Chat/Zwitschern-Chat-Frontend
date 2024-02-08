@@ -84,8 +84,8 @@ function fetchAuthUserData() {
 }
 
   // Funktion, um Nutzerdaten vom API-Server zu holen
-  function fetchApiUserData(userId) {
-  fetch(`/api/user/${userId}`)
+  function fetchApiUserData(sub) {
+  fetch(`/api/user/${sub}`)
     .then(response => {
       if (response.ok) {
         return response.json();
