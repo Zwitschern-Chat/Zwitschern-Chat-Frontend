@@ -130,6 +130,7 @@ async function fetchPosts() {
     }
     const data = await response.json();
     const postList = document.getElementById('chat__output');
+    postList.innerHTML = '';
 
     for (const post of data) {
       const user = await fetchUser(post.user_number); // Benutzerinformationen holen
