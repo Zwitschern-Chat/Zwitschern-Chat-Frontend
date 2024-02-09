@@ -33,19 +33,29 @@
   <img src="assets/account.png" alt="Account" class="account" id="accountButton" onclick="window.location.href='https://zwitschern.chat/auth/v1.0/account'" style="display:none;">  
 </div>
 
-<!-- Chat Test Placeholder-->
-<div class="chat__input">
-  <input type="text" id="message" placeholder="Nachricht" required>
-  <button type="button" onclick="sendMessage()">Senden</button>
-</div>
 
-<!-- Chat Test Placeholder-->
-<div class="chat__output">
+<!-- Chat Messages placeholder while loading messages -->
+<div class="message-placeholder">
+  <div id="message-placeholder"><img src="assets/loading.gif" alt="Ladeanimation" style="width: 50px; height: 50px;"></div>
+</div>
+<!-- Chat Messages are displayed here -->
+<div class="chat__output hide">
+      <!-- Post a message here -->
+    <div class="chat__input">
+      <input type="text" id="message" placeholder="Nachricht" required>
+      <button type="button" onclick="sendMessage()">Senden</button>
+    </div>
     <div id="chat__output">
   </div>
 
   
 <script>
+
+// Helper Funktion for delay / sleep
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 // Setze die Basis-URL basierend auf dem Hostnamen der Seite
 const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://zwitschern.chat';
 
@@ -153,12 +163,23 @@ async function fetchPosts() {
     const postList = document.getElementById('chat__output');
     postList.innerHTML = '';
 
-    for (const post of data) {
+    // Umkehren der Nachrichten, sodass die neueste Nachricht zuerst angezeigt wird
+    const reversedData = data.reverse();
+
+    for (const post of reversedData) {
       const user = await fetchUser(post.user_number); // Benutzerinformationen holen
       const userContent = user ? `<img src="${user.profile_picture}" alt="Profilbild" style="width: 20px; height: 20px;"> <span>${user.username}</span>` : '<span>Anonymer Nutzer</span>';
-      const postContent = `<div class="post">${userContent}<p> : ${post.message}</p></div>`;
+
+      // Datum formatieren 
+      const date = new Date(post.created_at);
+      const formattedDate = date.toLocaleString('de-DE'); // Passt das Format gegebenenfalls an Ihre Anforderungen an
+
+      const postContent = `<div class="post"> <div id="userContent">${userContent}</div> <div id="formattedDate">${formattedDate}</div> <id="message">${post.message}</div></div>`;
       postList.innerHTML += postContent;
     }    
+    const messagePlaceholder = document.getElementById('message-placeholder');
+    messagePlaceholder.parentElement.classList.add('hide');
+    postList.parentElement.classList.remove('hide');
   } catch (error) {
     console.error('Es gab ein Problem mit der Fetch-Anfrage:', error);
   }
