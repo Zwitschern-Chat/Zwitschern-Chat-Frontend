@@ -72,7 +72,7 @@ if (!window.location.hostname.includes('localhost')) {
   document.getElementById('user-profile-picture').src = 'https://via.placeholder.com/100';
   document.getElementById('user-name-display').textContent = 'Nicht verfügbar auf localhost';
   document.getElementById('user-email-display').textContent = 'E-Mail: Nicht verfügbar';
-  document.getElementById('user-creation-date-display').textContent = 'Erstellt am: Nicht verfügbar';
+  document.getElementById('user-creation-date-display').textContent = 'Beitritt am: Nicht verfügbar';
   document.getElementById('user-bio-display').textContent = 'Bio: Nicht verfügbar';
 }
 
@@ -191,7 +191,7 @@ function fetchAuthUserData() {
     .then(data => {
       document.getElementById('user-name-display').textContent = `Nutzername: ${data.username}`;
       document.getElementById('user-name-input').value = data.username;
-      document.getElementById('user-creation-date-display').textContent = `Erstellt am: ${new Date(data.created_at).toLocaleDateString()}`; 
+      document.getElementById('user-creation-date-display').textContent = `Beitritt am: ${new Date(data.created_at).toLocaleDateString()}`; 
       if(data.bio) {
         document.getElementById('user-bio-display').textContent = `Bio: ${data.bio}`; 
       } else {
