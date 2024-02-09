@@ -69,10 +69,17 @@ async function sendMessage() {
 
 
     // Senden Sie die Anfrage mit Titel und Text
-    const url = `${API_BASE_URL}/auth/post/${user_number}/${message}`;
-    const response = await fetch(url);
-    return response;
-
+    return fetch(`${API_BASE_URL}/auth/post`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        user_number: user_number,
+        message: message 
+      })
+    })
+    .then(response => {
       if (response.ok) {
         console.log('Nachricht gesendet');
         // Leeren Sie die Eingabefelder nach erfolgreichem Senden
