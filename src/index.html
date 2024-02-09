@@ -29,8 +29,8 @@
     <div class="header__title">ZWITSCHERN.CHAT</div>
     <div class="header__subtitle">DER CHAT FÜR ALLE!</div>
   </div>
-  <img src="assets/login.png" alt="Account" class="account" onclick="window.location.href='https://zwitschern.chat/auth/login'">
-  <img src="assets/account.png" alt="Account" class="account" style="display: none;" onclick="window.location.href='https://zwitschern.chat/auth/account'">
+  <img src="assets/login.png" alt="Login" class="account" id="loginButton" onclick="window.location.href='https://zwitschern.chat/auth/login'" style="display:none;">
+  <img src="assets/account.png" alt="Account" class="account" id="accountButton" onclick="window.location.href='https://zwitschern.chat/auth/account'" style="display:none;">  
 </div>
 
 <!-- Chat Test Placeholder-->
@@ -49,6 +49,27 @@
 // Setze die Basis-URL basierend auf dem Hostnamen der Seite
 const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:3000' : 'https://zwitschern.chat';
 
+// Überprüfen Sie den Login-Status, wenn die Seite geladen wird
+document.addEventListener('DOMContentLoaded', function() {
+    checkLoginStatus();
+});
+
+async function checkLoginStatus() {
+    try {
+        const response = await fetch('/auth/check');
+        const statusText = await response.text();
+        
+        if (statusText === 'Logged in') {
+            document.getElementById('accountButton').style.display = 'block';
+            document.getElementById('loginButton').style.display = 'none';
+        } else {
+            document.getElementById('loginButton').style.display = 'block';
+            document.getElementById('accountButton').style.display = 'none';
+        }
+    } catch (error) {
+        console.error('Fehler beim Überprüfen des Login-Status:', error);
+    }
+}
 
 // Funktion, um Nachrichten zu senden
 async function sendMessage() {
