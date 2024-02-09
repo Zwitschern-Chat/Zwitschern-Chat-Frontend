@@ -50,6 +50,10 @@
 
   
 <script>
+// Fügen Sie ein Event-Listener hinzu, um die Klasse "loaded" zum Header hinzuzufügen, wenn die Seite geladen ist
+window.addEventListener('load', function() {
+    document.querySelector('.header').classList.add('loaded');
+});
 
 // Helper Funktion for delay / sleep
 function sleep(ms) {
