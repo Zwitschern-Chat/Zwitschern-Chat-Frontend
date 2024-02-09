@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Zwitschern.Chat</title>
+  <title>ZWITSCHERN.CHAT</title>
   <link rel="stylesheet" href="styles.css">
 
    <!-- Favicon hinzufügen -->
@@ -29,8 +29,8 @@
     <div class="header__title">ZWITSCHERN.CHAT</div>
     <div class="header__subtitle">DER CHAT FÜR ALLE!</div>
   </div>
-  <img src="assets/login.png" alt="Login" class="account" id="loginButton" onclick="window.location.href='https://zwitschern.chat/auth/login'" style="display:none;">
-  <img src="assets/account.png" alt="Account" class="account" id="accountButton" onclick="window.location.href='https://zwitschern.chat/auth/account'" style="display:none;">  
+  <img src="assets/login.png" alt="Login" class="account" id="loginButton" onclick="window.location.href='https://zwitschern.chat/auth/v1.0/login'" style="display:none;">
+  <img src="assets/account.png" alt="Account" class="account" id="accountButton" onclick="window.location.href='https://zwitschern.chat/auth/v1.0/account'" style="display:none;">  
 </div>
 
 <!-- Chat Test Placeholder-->
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 async function checkLoginStatus() {
     try {
-        const response = await fetch('/auth/check');
+        const response = await fetch('/auth/v1.0/check');
         const statusText = await response.text();
         
         if (statusText === 'Logged in') {
@@ -79,7 +79,7 @@ async function sendMessage() {
     return; // Beendet die Funktion frühzeitig, wenn keine Nachricht eingegeben wurde
   } 
 
-  fetch('/auth/user')
+  fetch('/auth/v1.0/user')
   .then(response => {
     if (response.ok) {
       return response.json();
@@ -89,7 +89,7 @@ async function sendMessage() {
     const sub = data.sub;
 
     // Verwenden Sie die aktualisierten Variablen, um die nächste Anfrage zu machen
-    return fetch(`${API_BASE_URL}/api/user_sub/${sub}`);
+    return fetch(`${API_BASE_URL}/api/v1.0/user_sub/${sub}`);
   })
   .then(response => {
     if (response.ok) {
@@ -103,7 +103,7 @@ async function sendMessage() {
 
 
     // Senden Sie die Anfrage mit Titel und Text
-    return fetch(`${API_BASE_URL}/auth/post`, {
+    return fetch(`${API_BASE_URL}/auth/v1.0/post`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -135,7 +135,7 @@ async function sendMessage() {
   })
   .catch(error => {
     // Redirect to login page if not authenticated
-    window.location.href = 'https://zwitschern.chat/auth/login';
+    window.location.href = 'https://zwitschern.chat/auth/v1.0/login';
     console.error('Nicht authentifiziert:', error);
   });
 }
@@ -144,7 +144,7 @@ async function sendMessage() {
 // Funktion, um Nachrichten vom Server zu holen und Nutzerinformationen anzuzeigen
 async function fetchPosts() {
   try {
-    const url = `${API_BASE_URL}/api/posts`;
+    const url = `${API_BASE_URL}/api/v1.0/posts`;
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`Error: ${response.status}`);
@@ -169,7 +169,7 @@ fetchPosts();
 // Funktion, um Nutzerinformationen anhand der Benutzernummer zu holen
 async function fetchUser(user_number) {
   try {
-    const url = `${API_BASE_URL}/api/user_num/${user_number}`;
+    const url = `${API_BASE_URL}/api/v1.0/user_num/${user_number}`;
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`Error: ${response.status}`);

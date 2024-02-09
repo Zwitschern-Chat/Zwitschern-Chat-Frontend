@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Zwitschern.Chat</title>
+  <title>ZWITSCHERN.CHAT</title>
   <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
@@ -17,7 +17,7 @@
     <div class="header__title">ZWITSCHERN.CHAT</div>
     <div class="header__subtitle">DER CHAT FÜR ALLE!</div>
   </div>
-  <img src="../assets/logout.png" alt="Account" class="account" onclick="window.location.href='https://zwitschern.chat/auth/logout'">
+  <img src="../assets/logout.png" alt="Account" class="account" onclick="window.location.href='https://zwitschern.chat/auth/v1.0/logout'">
 </div>
 
 <!-- Container für Nutzername und Profilbild -->
@@ -56,7 +56,7 @@ if (!window.location.hostname.includes('localhost')) {
 
 // Funktion, um Nutzerdaten vom Auth-Server zu holen  
 function fetchAuthUserData() {
-  fetch('/auth/user')
+  fetch('/auth/v1.0/user')
     .then(response => {
       if (response.ok) {
         return response.json();
@@ -79,13 +79,13 @@ function fetchAuthUserData() {
     })
     .catch(error => {
       console.error('Keine Nutzerdaten vorhanden:', error);
-      window.location.href = 'https://zwitschern.chat/auth/login';
+      window.location.href = 'https://zwitschern.chat/auth/v1.0/login';
     });
 }
 
   // Funktion, um Nutzerdaten vom API-Server zu holen
   function fetchApiUserData(sub) {
-  fetch(`/api/user_sub/${sub}`)
+  fetch(`/api/v1.0/user_sub/${sub}`)
     .then(response => {
       if (response.ok) {
         return response.json();
