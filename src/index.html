@@ -41,22 +41,9 @@ const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhos
 async function sendMessage() {
   let message = document.getElementById('message').value;
 
-  // Validierung hinzufügen
   if (!message) {
-    return; // Beendet die Funktion frühzeitig, wenn Validierung fehlschlägt
-  } else {
-    // Do prevent sql injection, xss and other attacks here 
-    message = message.trim();
-    message = message.replace(/\s+/g, ' ');
-    message = message.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    message = message.replace(/&/g, '&amp;');
-    message = message.replace(/"/g, '&quot;');
-    message = message.replace(/'/g, '&#x27;');
-    message = message.replace(/`/g, '&#x60;');
-    message = message.replace(/=/g, '&#x3D;');
-    console.log(message);
-    // TODO: Add more validation here     
-  }
+    return; // Beendet die Funktion frühzeitig, wenn keine Nachricht eingegeben wurde
+  } 
 
   fetch('/auth/user')
   .then(response => {
@@ -82,7 +69,7 @@ async function sendMessage() {
 
 
     // Senden Sie die Anfrage mit Titel und Text
-    return fetch(`${API_BASE_URL}/api/post`, {
+    return fetch(`${API_BASE_URL}/auth/post`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

@@ -15,7 +15,8 @@ body {
 /* Media Queries für Tablet und PC */
 @media (min-width: 768px) {
     body {
-        justify-content: center; /* Zentriert den Inhalt für Tablets und PCs */
+        justify-content: center; /* center Zentriert den Inhalt für Tablets und PCs */
+        flex-wrap: wrap; /* Ermöglicht das Umbruchverhalten für Tablets und PCs */
     }
 }
 
