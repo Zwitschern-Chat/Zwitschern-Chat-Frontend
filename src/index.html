@@ -28,9 +28,7 @@
 
 <!-- Chat Test Placeholder-->
 <div class="chat__output">
-  <div class="chat__output__post">
     <div id="chat__output">
-    </div>
   </div>
 
   
@@ -70,7 +68,7 @@ async function sendMessage() {
     const sub = data.sub;
 
     // Verwenden Sie die aktualisierten Variablen, um die nächste Anfrage zu machen
-    return fetch(`${API_BASE_URL}/api/user/${sub}`);
+    return fetch(`${API_BASE_URL}/api/user_sub/${sub}`);
   })
   .then(response => {
     if (response.ok) {
@@ -135,8 +133,8 @@ async function fetchPosts() {
 
     for (const post of data) {
       const user = await fetchUser(post.user_number); // Benutzerinformationen holen
-      const userContent = user ? `<img src="${user.profile_picture}" alt="Profilbild" style="width: 20px; height: 20px;"><span>${user.username}</span>` : '<span>Anonymer Nutzer</span>';
-      const postContent = `<div class="post">${userContent}<p>${post.message}</p></div>`;
+      const userContent = user ? `<img src="${user.profile_picture}" alt="Profilbild" style="width: 20px; height: 20px;"> <span>${user.username}</span>` : '<span>Anonymer Nutzer</span>';
+      const postContent = `<div class="post">${userContent}<p> : ${post.message}</p></div>`;
       postList.innerHTML += postContent;
     }    
   } catch (error) {
@@ -149,7 +147,7 @@ fetchPosts();
 // Funktion, um Nutzerinformationen anhand der Benutzernummer zu holen
 async function fetchUser(user_number) {
   try {
-    const url = `${API_BASE_URL}/api/user/${user_number}`;
+    const url = `${API_BASE_URL}/api/user_num/${user_number}`;
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`Error: ${response.status}`);

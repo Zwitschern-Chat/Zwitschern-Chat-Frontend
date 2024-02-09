@@ -20,12 +20,8 @@ body {
 }
 
 /* Zusätzliche Stilisierungen für User-Liste und Chat-Bereiche */
-.user-list, .chat__output {
-    background-color: rgba(0, 255, 255, 0.2); /* Halbtransparentes Türkis */
-    border: 2px solid rgba(0, 255, 255, 0.6); /* Leuchtender türkiser Rand */
+.chat__output {
     padding: 20px; /* Innenabstand */
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5), 0 0 20px rgba(0, 255, 255, 0.5); /* Leuchtender Schatten für den Neon-Effekt */
-    border-radius: 10px; /* Abgerundete Ecken */
     display: flex; /* Aktiviert Flexbox */
     flex-direction: column; /* Stapelt die Kinder vertikal */
     align-items: center; /* Zentriert die Kinder horizontal */
@@ -42,8 +38,7 @@ body {
     gap: 10px; /* Abstand zwischen den Eingabeelementen */
     padding: 20px;
     margin-top: 20px;
-    margin-bottom: 20px; /* Fügt oben und unten einen Abstand hinzu */
-    width: 100%;
+    width: 80%;
     max-width: 500px; /* Maximale Breite */
     border-radius: 10px; /* Abgerundete Ecken */
     box-shadow: 0 0 10px rgba(0, 255, 255, 0.5), 0 0 20px rgba(0, 255, 255, 0.5); /* Leuchtender Schatten */
@@ -63,6 +58,18 @@ body {
     margin: 10px 0; /* Fügt oben und unten einen Abstand hinzu */
 }
 
+.post {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 20px;
+    margin: 8px auto;
+    max-width: 500px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5), 0 0 20px rgba(0, 255, 255, 0.5);
+    background-color: rgba(0, 255, 255, 0.1);
+    margin-bottom: 15px;
+}
 
 /* Stil für den Nutzerprofil-Container */
 #user-profile {
