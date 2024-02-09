@@ -1,11 +1,24 @@
 <!DOCTYPE html>
 <html lang="de">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ZWITSCHERN.CHAT</title>
-  <link rel="stylesheet" href="../styles.css">
-</head>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZWITSCHERN.CHAT</title>
+    <link rel="stylesheet" href="../styles.css">
+  
+     <!-- Favicon hinzufügen -->
+     <link rel="icon" type="image/png" sizes="32x32" href="../assets/Zwitschern.Chat_LOGO.png">
+   
+     <!-- Website-Beschreibung hinzufügen -->
+     <meta name="description" content="Zwitschern.Chat - DER CHAT FÜR ALLE!">
+   
+     <!-- Für soziale Medien optimierte Metadaten -->
+     <meta property="og:title" content="Zwitschern.Chat">
+     <meta property="og:description" content="DER CHAT FÜR ALLE!">
+     <meta property="og:image" content="../assets/Zwitschern.Chat_LOGO.png">
+     <meta property="og:type" content="website">
+  
+  </head>
 <body>
 <div class="blur-background"></div>
 
@@ -23,12 +36,20 @@
 <!-- Container für Nutzername und Profilbild -->
 <div id="user-profile">
   <img id="user-profile-picture" src="" alt=" " style="width: 100px; height: 100px; border-radius: 50%;">
-  <div id="user-name-display"></div>
+  <div id="user-name-container">
+    <span id="user-name-display"></span>
+    <input type="text" id="user-name-input" style="display:none;" />
+    <button onclick="toggleEdit('user-name')" style="border: none; background-color: transparent; cursor: pointer;">
+      <img src="../assets/edit.png" alt="Edit" style="width: 20px; height: 20px; margin: -4px;">
+    </button>
+  </div>
+  <!-- Ähnliche Container für Bio und Sprache hinzufügen -->
   <div id="user-email-display"></div>
   <div id="user-creation-date-display"></div>
   <div id="user-bio-display"></div>
   <div id="user-language-display"></div>
 </div>
+
 
 <script>
   // Hilfsfunktion, um den Benutzer zur Startseite zu leiten
@@ -44,15 +65,86 @@ if (!window.location.hostname.includes('localhost')) {
   window.onload = fetchAuthUserData;
 } else {
   document.getElementById('user-profile-picture').src = 'https://via.placeholder.com/100';
-  document.getElementById('user-name-display').textContent = 'Nicht eingeloggt';
+  document.getElementById('user-name-display').textContent = 'Nicht verfügbar auf localhost';
   document.getElementById('user-email-display').textContent = 'E-Mail: Nicht verfügbar';
-  document.getElementById('user-role-display').textContent = 'Rolle: Nicht verfügbar';
   document.getElementById('user-creation-date-display').textContent = 'Erstellt am: Nicht verfügbar';
   document.getElementById('user-bio-display').textContent = 'Bio: Nicht verfügbar';
   document.getElementById('user-language-display').textContent = 'Sprache: Nicht verfügbar';
 }
 
+function toggleEdit(elementId) {
+  const displaySpan = document.getElementById(`${elementId}-display`);
+  const inputField = document.getElementById(`${elementId}-input`);
+  if (inputField.style.display === "none") {
+    inputField.value = displaySpan.textContent.replace('Nutzername: ', ''); // Entfernen des Präfixes
+    inputField.style.display = "";
+    displaySpan.style.display = "none";
+  } else {
+    inputField.style.display = "none";
+    displaySpan.style.display = "";
+    updateUserData(elementId, inputField.value); // Sendet die Änderung an den Server
+  }
+}
 
+function updateUserData(field, newValue) {
+   let newUsername = document.getElementById('user-name-input').value;
+  if (!newUsername) {
+    alert('Bitte geben Sie einen Benutzernamen ein');
+    return;
+  } 
+  fetch('/auth/v1.0/user')
+  .then(response => {
+    if (response.ok) {
+      return response.json();
+    } 
+  })
+  .then(data => {
+    const sub = data.sub;
+
+    // Verwenden Sie die aktualisierten Variablen, um die nächste Anfrage zu machen
+    return fetch(`/api/v1.0/user_sub/${sub}`);
+  })
+  .then(response => {
+    if (response.ok) {
+      return response.json();
+    }
+  })
+  .then(data => {
+    const user_number = data.number;
+    console.log(user_number);
+
+
+
+
+    return fetch('/auth/v1.0/username', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        user_number: user_number,
+        username: newUsername
+      })
+    })
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error('Fehler beim Aktualisieren des Benutzernamens');
+      }
+    })
+    .then(data => {
+      document.getElementById(`${field}-display`).textContent = `Nutzername: ${newValue}`;
+      console.log('Benutzername erfolgreich aktualisiert', data);
+    })
+    .catch(error => {
+      console.error('Fehler:', error);
+    });
+  })
+  .catch(error => {
+    console.error('Fehler:', error);
+  });
+}
 
 // Funktion, um Nutzerdaten vom Auth-Server zu holen  
 function fetchAuthUserData() {
@@ -105,8 +197,6 @@ function fetchAuthUserData() {
       } else {
         document.getElementById('user-language-display').textContent = 'Sprache: Noch nicht angegeben';
       }
-
-
     })
     .catch(error => {
       console.error('Fehler beim Abrufen der Nutzerdaten:', error);
