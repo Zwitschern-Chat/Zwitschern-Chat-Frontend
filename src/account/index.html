@@ -43,11 +43,9 @@
       <img src="../assets/edit.png" alt="Edit" style="width: 20px; height: 20px; margin: -4px;">
     </button>
   </div>
-  <!-- Ähnliche Container für Bio und Sprache hinzufügen -->
   <div id="user-email-display"></div>
   <div id="user-creation-date-display"></div>
   <div id="user-bio-display"></div>
-  <div id="user-language-display"></div>
 </div>
 
 
@@ -76,7 +74,6 @@ if (!window.location.hostname.includes('localhost')) {
   document.getElementById('user-email-display').textContent = 'E-Mail: Nicht verfügbar';
   document.getElementById('user-creation-date-display').textContent = 'Erstellt am: Nicht verfügbar';
   document.getElementById('user-bio-display').textContent = 'Bio: Nicht verfügbar';
-  document.getElementById('user-language-display').textContent = 'Sprache: Nicht verfügbar';
 }
 
 function toggleEdit(elementId) {
@@ -199,11 +196,6 @@ function fetchAuthUserData() {
         document.getElementById('user-bio-display').textContent = `Bio: ${data.bio}`; 
       } else {
         document.getElementById('user-bio-display').textContent = 'Bio: Noch nicht angegeben';
-      }
-      if(data.language) {
-        document.getElementById('user-language-display').textContent = `Sprache: ${data.language}`; 
-      } else {
-        document.getElementById('user-language-display').textContent = 'Sprache: Noch nicht angegeben';
       }
     })
     .catch(error => {
