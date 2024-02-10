@@ -208,11 +208,14 @@ async function fetchPosts() {
         editAndDeleteIcons = `<img src="assets/edit.png" alt="Bearbeiten" style="width: 15px; height: 15px; margin-left: 5px; cursor:pointer;" onclick="editPost('${post.id}')"><img src="assets/delete.png" alt="Löschen" style="width: 15px; height: 15px; margin-left: 5px; cursor:pointer;" onclick="deletePost('${post.id}')">`;
       }
 
-      const postContent = `<div class="post" data-post-id="${post.id}" style="cursor:pointer;">
+      const postContent = `<div class="post" data-post-id="${post.id}"
+                          onclick="location.href='https://zwitschern.chat/profile?username=${user ? user.username : 'anonymous'}'"                    
+                          style="cursor:pointer;">
                           <div id="userContent">${userContent}</div>
                           <div id="formattedDate">${formattedDate}</div>
                           <div id="message">${post.message}${editAndDeleteIcons}</div>
                           </div>`;
+                          
       postList.innerHTML += postContent;
     }
     const messagePlaceholder = document.getElementById('message-placeholder');
