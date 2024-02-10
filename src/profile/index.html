@@ -178,8 +178,8 @@ function updateUserData(field, newValue) {
       }
     })
     .then(data => {
-      const user_number = data.number;
-      console.log(user_number);
+      const number = data.number;
+      console.log(number);
 
       // Verwenden des dynamischen Endpunkts basierend auf dem aktualisierten Feld
       return fetch(endpoint, {
@@ -188,7 +188,7 @@ function updateUserData(field, newValue) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          user_number: user_number,
+          number: number,
           [field === 'user-name' ? 'username' : 'bio']: newValue
         })
       })
