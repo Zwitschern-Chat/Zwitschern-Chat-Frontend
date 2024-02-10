@@ -37,7 +37,6 @@
 <!-- Container für Nutzername und Profilbild -->
 <div id="user-profile" class="user-profile hide">
   <img id="user-profile-picture" src="" alt=" " style="width: 100px; height: 100px; border-radius: 50%;">
-  <div id="user-number-display"></div>
   <div id="user-name-container">
     <span id="user-name-display"></span>
     <input type="text" id="user-name-input" style="display:none;" />
@@ -46,7 +45,6 @@
     </button>
   </div>
   <div id="user-email-display"></div>
-  <div id="user-creation-date-display"></div>
     <div id="user-bio-container">
     <span id="user-bio-display"></span>
     <input type="text" id="user-bio-input" style="display:none;" />
@@ -54,6 +52,7 @@
       <img src="../assets/edit.png" alt="Edit" style="width: 20px; height: 20px; margin: -4px;">
     </button>
   </div>
+  <div class="profile-footer"><div id="user-creation-date-display"></div><div id="user-number-display"></div></div>
 </div>
 
 
@@ -91,9 +90,9 @@ if (!window.location.hostname.includes('localhost')) {
 } else {
   document.getElementById('user-profile-picture').src = 'https://via.placeholder.com/100';
   document.getElementById('user-name-display').textContent = 'Nicht verfügbar auf localhost';
-  document.getElementById('user-email-display').textContent = 'E-Mail: Nicht verfügbar';
-  document.getElementById('user-creation-date-display').textContent = 'Beitritt am: Nicht verfügbar';
-  document.getElementById('user-bio-display').textContent = 'Bio: Nicht verfügbar';
+  document.getElementById('user-email-display').textContent = 'Nicht verfügbar';
+  document.getElementById('user-creation-date-display').textContent = 'Nicht verfügbar';
+  document.getElementById('user-bio-display').textContent = 'Nicht verfügbar';
   document.getElementById('user-number-display').textContent = 'Nicht verfügbar';
 }
 
@@ -110,9 +109,9 @@ function loadUserInfoByUsername() {
       })
       .then(data => {
         document.getElementById('user-profile-picture').src = data.profile_picture || 'https://via.placeholder.com/100';
-        document.getElementById('user-name-display').textContent = `Nutzername: ${username}`;
-        document.getElementById('user-creation-date-display').textContent = `Beitritt am: ${new Date(data.created_at).toLocaleDateString()}`;
-        document.getElementById('user-bio-display').textContent = `Bio: ${data.bio || 'Noch nicht angegeben'}`;
+        document.getElementById('user-name-display').textContent = `${username}`;
+        document.getElementById('user-creation-date-display').textContent = `${new Date(data.created_at).toLocaleDateString()}`;
+        document.getElementById('user-bio-display').textContent = `${data.bio || 'Noch nicht angegeben'}`;
         document.getElementById('user-number-display').textContent = `#${data.number}`;
 
         // Editier-Buttons ausblenden
@@ -203,7 +202,7 @@ function updateUserData(field, newValue) {
         }
       })
       .then(data => {
-        document.getElementById(`${field}-display`).textContent = `${field === 'user-name' ? 'Nutzername: ' : 'Bio: '} ${newValue}`;
+        document.getElementById(`${field}-display`).textContent = `${field === 'user-name' ? '' : ''} ${newValue}`;
         console.log(`${field === 'user-name' ? 'Benutzername' : 'Bio'} erfolgreich aktualisiert`, data);
       })
       .catch(error => {
@@ -231,7 +230,7 @@ function fetchAuthUserData() {
         document.getElementById('user-profile-picture').src = data.picture;
       }
       if(data.email) {
-        document.getElementById('user-email-display').textContent = `E-Mail: ${data.email}`;
+        document.getElementById('user-email-display').textContent = `${data.email}`;
       }
       // Hier rufst du fetchApiUserData mit der user id (sub) auf
       if(data.sub) {
@@ -255,13 +254,13 @@ function fetchAuthUserData() {
       }
     })
     .then(data => {
-      document.getElementById('user-name-display').textContent = `Nutzername: ${data.username}`;
+      document.getElementById('user-name-display').textContent = `${data.username}`;
       document.getElementById('user-name-input').value = data.username;
-      document.getElementById('user-creation-date-display').textContent = `Beitritt am: ${new Date(data.created_at).toLocaleDateString()}`; 
+      document.getElementById('user-creation-date-display').textContent = `${new Date(data.created_at).toLocaleDateString()}`; 
       if(data.bio) {
-        document.getElementById('user-bio-display').textContent = `Bio: ${data.bio}`; 
+        document.getElementById('user-bio-display').textContent = `${data.bio}`; 
       } else {
-        document.getElementById('user-bio-display').textContent = 'Bio: Noch nicht angegeben';
+        document.getElementById('user-bio-display').textContent = 'Noch nicht angegeben';
       }
       document.getElementById('user-number-display').textContent = `#${data.number}`;
     })

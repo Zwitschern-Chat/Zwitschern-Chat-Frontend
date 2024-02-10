@@ -57,8 +57,15 @@ body {
 #formattedDate {
     font-size: 0.8em;
     color: #1da1f2;
+    font-style: italic;
 }
 
+.profile-footer {
+    font-size: 0.8em;
+    color: #1da1f2;
+    display: flex;
+    font-style: italic;
+}
 
 /* Grundlegende Anpassungen für den Eingabebereich */
 .chat__input {

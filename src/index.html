@@ -185,9 +185,6 @@ async function fetchPosts() {
       throw new Error(`Error: ${response.status}`);
     }
     const data = await response.json();
-    const postList = document.getElementById('chat__output');
-    postList.innerHTML = '';
-
     const reversedData = data.reverse();
 
     for (const post of reversedData) {
@@ -195,7 +192,7 @@ async function fetchPosts() {
       let userContent;
       if (user) {
         userContent = currentUserNumber === post.user_number
-          ? `<img src="${user.profile_picture}" alt="Profilbild" style="width: 20px; height: 20px;"> <u>${user.username}</u>`
+          ? `<img src="${user.profile_picture}" onclick="location.href='https://zwitschern.chat/profile?username=${user ? user.username : 'anonymous'}'" alt="Profilbild" style="width: 20px; height: 20px;"> <u>${user.username}</u>`
           : `<img src="${user.profile_picture}" alt="Profilbild" style="width: 20px; height: 20px;"> <span>${user.username}</span>`;
       } else {
         userContent = '<span>Anonymer Nutzer</span>';
@@ -208,8 +205,10 @@ async function fetchPosts() {
         editAndDeleteIcons = `<img src="assets/edit.png" alt="Bearbeiten" style="width: 15px; height: 15px; margin-left: 5px; cursor:pointer;" onclick="editPost('${post.id}')"><img src="assets/delete.png" alt="Löschen" style="width: 15px; height: 15px; margin-left: 5px; cursor:pointer;" onclick="deletePost('${post.id}')">`;
       }
 
-      const postContent = `<div class="post" data-post-id="${post.id}"
-                          onclick="location.href='https://zwitschern.chat/profile?username=${user ? user.username : 'anonymous'}'"                    
+      // Änderung hier: onclick-Handler wird bedingt hinzugefügt
+      const onClickAttribute = currentUserNumber !== post.user_number ? `onclick="location.href='https://zwitschern.chat/profile?username=${user ? user.username : 'anonymous'}'"` : "";
+
+      const postContent = `<div class="post" data-post-id="${post.id}" ${onClickAttribute}                    
                           style="cursor:pointer;">
                           <div id="userContent">${userContent}</div>
                           <div id="formattedDate">${formattedDate}</div>
