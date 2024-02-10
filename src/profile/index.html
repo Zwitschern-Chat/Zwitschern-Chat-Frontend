@@ -1,24 +1,19 @@
 <!DOCTYPE html>
 <html lang="de">
+<!-- Head of Website -->
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZWITSCHERN.CHAT</title>
     <link rel="stylesheet" href="../styles.css">
-  
-     <!-- Favicon hinzufügen -->
-     <link rel="icon" type="image/png" sizes="32x32" href="../assets/Zwitschern.Chat_LOGO.png">
-   
-     <!-- Website-Beschreibung hinzufügen -->
-     <meta name="description" content="ZWITSCHERN.CHAT - DER CHAT FÜR ALLE!">
-   
-     <!-- Für soziale Medien optimierte Metadaten -->
-     <meta property="og:title" content="ZWITSCHERN.CHAT">
-     <meta property="og:description" content="DER CHAT FÜR ALLE!">
-     <meta property="og:image" content="../assets/Zwitschern.Chat_LOGO.png">
-     <meta property="og:type" content="website">
-  
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/Zwitschern.Chat_LOGO.png">
+    <meta name="description" content="ZWITSCHERN.CHAT - DER CHAT FÜR ALLE!">
+    <meta property="og:title" content="ZWITSCHERN.CHAT">
+    <meta property="og:description" content="DER CHAT FÜR ALLE!">
+    <meta property="og:image" content="../assets/Zwitschern.Chat_LOGO.png">
+    <meta property="og:type" content="website">
   </head>
+<!-- Body of Website -->  
 <body>
 <div class="blur-background"></div>
 
@@ -34,7 +29,7 @@
   <img src="../assets/profile.png" alt="Profile" class="profile hide" id="profileButton" onclick="window.location.href='https://zwitschern.chat/auth/v1.0/profile'">  
 </div>
 
-<!-- Container für Nutzername und Profilbild -->
+<!-- Container for User Profile -->
 <div id="user-profile" class="user-profile hide">
   <img id="user-profile-picture" src="" alt=" " style="width: 100px; height: 100px; border-radius: 50%;">
   <div id="user-name-container">
@@ -55,29 +50,27 @@
   <div class="profile-footer"><div id="user-creation-date-display"></div><div id="user-number-display"></div></div>
 </div>
 
-
+<!-- Javascript -->
 <script>
-// Fügen Sie ein Event-Listener hinzu, um die Klasse "loaded" zum Header hinzuzufügen, wenn die Seite geladen ist
+// Helper add an event listener to the window object to listen for the load event
 window.addEventListener('load', function() {
     document.querySelector('.header').classList.add('loaded');
 });
-  // Hilfsfunktion, um den Benutzer zur Startseite zu leiten
+  // Helper function to redirect to home, that is works for both localhost and the deployed version
   function redirectToHome() {
     var baseUrl = window.location.href.split('/profile')[0];
     window.location.href = baseUrl;
 }
 
-// Funktion, um URL-Parameter zu erhalten
+// Function to get the value of a query parameter for the correct profile
 function getQueryParam(param) {
   const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get(param);
 }
 
-
-
-// only fetch user data if not on localhost
+// Only fetch user data if not on localhost
 if (!window.location.hostname.includes('localhost')) {
-  // Rufen Sie die Funktion beim Laden der Seite auf
+  // Call the function when the window loads
   if (getQueryParam('username')) {
   window.onload = loadUserInfoByUsername;
   // Change Logout button to Profile Button
@@ -85,55 +78,57 @@ if (!window.location.hostname.includes('localhost')) {
   document.getElementById('profileButton').classList.remove('hide');
 
   } else {
+   // Only call the function when the window loads
   window.onload = fetchAuthUserData;
   }
 } else {
+  // Set the user profile to a default value if on localhost for testing 
   document.getElementById('user-profile-picture').src = 'https://via.placeholder.com/100';
-  document.getElementById('user-name-display').textContent = 'Nicht verfügbar auf localhost';
-  document.getElementById('user-email-display').textContent = 'Nicht verfügbar';
-  document.getElementById('user-creation-date-display').textContent = 'Nicht verfügbar';
-  document.getElementById('user-bio-display').textContent = 'Nicht verfügbar';
-  document.getElementById('user-number-display').textContent = 'Nicht verfügbar';
+  document.getElementById('user-name-display').textContent = 'localhost';
+  document.getElementById('user-email-display').textContent = 'localhost@mail.com';
+  document.getElementById('user-creation-date-display').textContent = '9.99.9999';
+  document.getElementById('user-bio-display').textContent = 'localhost';
+  document.getElementById('user-number-display').textContent = '99';
 }
 
-// Hauptfunktion, um Nutzerinformationen basierend auf dem 'username' URL-Parameter zu laden
+// Main function to load user info by username
 function loadUserInfoByUsername() {
   const username = getQueryParam('username');
   if (username) {
     fetch(`/api/v1.0/user/${username}`)
       .then(response => {
         if (!response.ok) {
-          throw new Error('Nutzerinformationen konnten nicht geladen werden');
+          throw new Error('User not found');
         }
         return response.json();
       })
       .then(data => {
+        // Set the user profile picture, name, creation date, bio, and number
         document.getElementById('user-profile-picture').src = data.profile_picture || 'https://via.placeholder.com/100';
         document.getElementById('user-name-display').textContent = `${username}`;
         document.getElementById('user-creation-date-display').textContent = `${new Date(data.created_at).toLocaleDateString()}`;
-        document.getElementById('user-bio-display').textContent = `${data.bio || 'Noch nicht angegeben'}`;
+        document.getElementById('user-bio-display').textContent = `${data.bio || ' '}`;
         document.getElementById('user-number-display').textContent = `#${data.number}`;
 
-        // Editier-Buttons ausblenden
+        // Only show the edit buttons if the user is viewing their own profile
         const editUsernameButton = document.getElementById('editUsername');
         editUsernameButton.style.display = 'none';
         const editBioButton = document.getElementById('editBio');
         editBioButton.style.display = 'none';
         
-        // Elemente, die nicht befüllt sind, ausblenden
+        // Elements to hide if the user is not viewing their own profile
         document.getElementById('user-email-display').style.display = 'none';
         
-        // Profilcontainer anzeigen
+        // Show the user profile
         document.getElementById('user-profile').classList.remove('hide');
       })
       .catch(error => {
-        console.error('Fehler:', error);
+        console.error('Error:', error);
       });
   }
 }
 
-
-
+// Function to toggle the edit mode for the user name and bio
 function toggleEdit(elementId) {
   const displaySpan = document.getElementById(`${elementId}-display`);
   const inputField = document.getElementById(`${elementId}-input`);
@@ -145,23 +140,21 @@ function toggleEdit(elementId) {
   } else {
     inputField.style.display = "none";
     displaySpan.style.display = "";
-    updateUserData(elementId, inputField.value); // Sendet die Änderung an den Server
+    updateUserData(elementId, inputField.value); // Send the updated value to the server
   }
 }
 
+// Function to update the user data
 function updateUserData(field, newValue) {
   let inputField = document.getElementById(`${field}-input`);
-  // Variable für den Endpunkt festlegen
+  // Variable to store the endpoint for the fetch request
   let endpoint;
   if (field === 'user-name') {
     endpoint = '/auth/v1.0/username';
-    // Da inputField bereits definiert ist, ist diese Zeile überflüssig
-    // inputField = document.getElementById(`${field}-input`);
   } else if (field === 'user-bio') {
     endpoint = '/auth/v1.0/bio';
-    // inputField = document.getElementById(`${field}-input`); ist ebenfalls überflüssig
   }
-
+ // Get the user data from the auth server
   fetch('/auth/v1.0/user')
     .then(response => {
       if (response.ok) {
@@ -171,7 +164,7 @@ function updateUserData(field, newValue) {
     .then(data => {
       const sub = data.sub;
 
-      // Verwenden Sie die aktualisierten Variablen, um die nächste Anfrage zu machen
+      // Use the dynamic endpoint based on the updated field
       return fetch(`/api/v1.0/user_sub/${sub}`);
     })
     .then(response => {
@@ -183,7 +176,7 @@ function updateUserData(field, newValue) {
       const number = data.number;
       console.log(number);
 
-      // Verwenden des dynamischen Endpunkts basierend auf dem aktualisierten Feld
+      // Use the dynamic endpoint based on the updated field
       return fetch(endpoint, {
         method: 'POST',
         headers: {
@@ -198,31 +191,31 @@ function updateUserData(field, newValue) {
         if (response.ok) {
           return response.json();
         } else {
-          throw new Error(`Fehler beim Aktualisieren des ${field === 'user-name' ? 'Benutzernamens' : 'Bio'}`);
+          throw new Error(`Error: ${field === 'user-name' ? 'User' : 'Bio'}`);
         }
       })
       .then(data => {
         document.getElementById(`${field}-display`).textContent = `${field === 'user-name' ? '' : ''} ${newValue}`;
-        console.log(`${field === 'user-name' ? 'Benutzername' : 'Bio'} erfolgreich aktualisiert`, data);
+        console.log(`${field === 'user-name' ? 'User' : 'Bio'} successful updated`, data);
       })
       .catch(error => {
-        console.error('Fehler:', error);
+        console.error('Error:', error);
       });
     })
     .catch(error => {
-    console.error('Fehler:', error);
+    console.error('Error:', error);
   });
 }
 
 
-// Funktion, um Nutzerdaten vom Auth-Server zu holen  
+// Function to fetch the user data from the auth server
 function fetchAuthUserData() {
   fetch('/auth/v1.0/user')
     .then(response => {
       if (response.ok) {
         return response.json();
       } else {
-        throw new Error('Nicht authentifiziert');
+        throw new Error('Not authorized');
       }
     })
     .then(data => {
@@ -232,25 +225,25 @@ function fetchAuthUserData() {
       if(data.email) {
         document.getElementById('user-email-display').textContent = `${data.email}`;
       }
-      // Hier rufst du fetchApiUserData mit der user id (sub) auf
+      // Get the user data 
       if(data.sub) {
         fetchApiUserData(data.sub);
       }
     })
     .catch(error => {
-      console.error('Keine Nutzerdaten vorhanden:', error);
+      console.error('No userdata found:', error);
       window.location.href = 'https://zwitschern.chat/auth/v1.0/login';
     });
 }
 
-  // Funktion, um Nutzerdaten vom API-Server zu holen
+  // Function to fetch the user data from the API server
   function fetchApiUserData(sub) {
   fetch(`/api/v1.0/user_sub/${sub}`)
     .then(response => {
       if (response.ok) {
         return response.json();
       } else {
-        throw new Error('Nutzerdaten konnten nicht abgerufen werden');
+        throw new Error('Userdata not found');
       }
     })
     .then(data => {
@@ -260,21 +253,20 @@ function fetchAuthUserData() {
       if(data.bio) {
         document.getElementById('user-bio-display').textContent = `${data.bio}`; 
       } else {
-        document.getElementById('user-bio-display').textContent = 'Noch nicht angegeben';
+        document.getElementById('user-bio-display').textContent = ' ';
       }
       document.getElementById('user-number-display').textContent = `#${data.number}`;
     })
     .catch(error => {
-      console.error('Fehler beim Abrufen der Nutzerdaten:', error);
+      console.error('Error getting userdata:', error);
     });
     let userProfile = document.getElementById('user-profile');
     userProfile.classList.remove('hide');
 }
-
-
-
-
 </script>
+<!-- end of javascript -->
 
 </body>
+<!-- end of body -->
+
 </html>
