@@ -37,6 +37,7 @@
 <!-- Container für Nutzername und Profilbild -->
 <div id="user-profile" class="user-profile hide">
   <img id="user-profile-picture" src="" alt=" " style="width: 100px; height: 100px; border-radius: 50%;">
+  <div id="user-number-display"></div>
   <div id="user-name-container">
     <span id="user-name-display"></span>
     <input type="text" id="user-name-input" style="display:none;" />
@@ -93,6 +94,7 @@ if (!window.location.hostname.includes('localhost')) {
   document.getElementById('user-email-display').textContent = 'E-Mail: Nicht verfügbar';
   document.getElementById('user-creation-date-display').textContent = 'Beitritt am: Nicht verfügbar';
   document.getElementById('user-bio-display').textContent = 'Bio: Nicht verfügbar';
+  document.getElementById('user-number-display').textContent = 'Nicht verfügbar';
 }
 
 // Hauptfunktion, um Nutzerinformationen basierend auf dem 'username' URL-Parameter zu laden
@@ -111,6 +113,7 @@ function loadUserInfoByUsername() {
         document.getElementById('user-name-display').textContent = `Nutzername: ${username}`;
         document.getElementById('user-creation-date-display').textContent = `Beitritt am: ${new Date(data.created_at).toLocaleDateString()}`;
         document.getElementById('user-bio-display').textContent = `Bio: ${data.bio || 'Noch nicht angegeben'}`;
+        document.getElementById('user-number-display').textContent = `#${data.number}`;
 
         // Editier-Buttons ausblenden
         const editUsernameButton = document.getElementById('editUsername');
@@ -260,6 +263,7 @@ function fetchAuthUserData() {
       } else {
         document.getElementById('user-bio-display').textContent = 'Bio: Noch nicht angegeben';
       }
+      document.getElementById('user-number-display').textContent = `#${data.number}`;
     })
     .catch(error => {
       console.error('Fehler beim Abrufen der Nutzerdaten:', error);
