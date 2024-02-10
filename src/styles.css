@@ -1,27 +1,20 @@
-/* Zwitschern Chat Frontend Styles */
-/* Zentriert den Inhalt der gesamten Seite */
-/* Standard-Stil für mobile Geräte */
-
-
-
-
+/* Zwitschern Chat Frontend styles */
 
 body {
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* Standard-Einstellung für mobile Geräte */
+    justify-content: flex-start; 
     align-items: center;
     height: 100vh;
     margin: 0;
     font-family: 'Comic Sans MS', sans-serif;
     background-color: #f0f0f0;
 }
-/* Media Queries für Tablet und PC */
 @media (min-width: 768px) {
     body {
         flex-direction: row;
-        justify-content: center; /* center Zentriert den Inhalt für Tablets und PCs */
-        flex-wrap: wrap; /* Ermöglicht das Umbruchverhalten für Tablets und PCs */
+        justify-content: center; 
+        flex-wrap: wrap; 
     }
 }
 
@@ -29,30 +22,24 @@ body {
     display: none !important
 }
 
-/* Zusätzliche Stilisierungen für User-Liste und Chat-Bereiche */
 .chat__output {
-    padding: 20px; /* Innenabstand */
-    display: flex; /* Aktiviert Flexbox */
-    gap: 10px; /* Abstand zwischen den Kind-Elementen */
-    max-width: 500px; /* Maximale Breite */
-    overflow-y: auto; /* Ermöglicht vertikales Scrollen, wenn der Inhalt die Höhe überschreitet */
-    height: 500px; /* Feste Höhe des Chat-Fensters */
-    /* oder alternativ max-height, wenn die Höhe flexibel sein soll, aber nicht größer als ein bestimmter Wert */
-    max-height: 500px; /* Maximale Höhe, danach wird gescrollt */
-    box-shadow: 0 0 1px rgb(255 255 255 / 50%), 0 0 20px rgb(255 255 255 / 50%); /* Leuchtender Schatten */
+    padding: 20px; 
+    display: flex; 
+    gap: 10px;
+    max-width: 500px; 
+    overflow-y: auto;
+    height: 500px; 
+    max-height: 500px;
+    box-shadow: 0 0 1px rgb(255 255 255 / 50%), 0 0 20px rgb(255 255 255 / 50%);
     border-radius: 50px;
     flex-direction: column;
 }
 
-
-/* Media Queries für Mobilgeräte */
 @media (max-width: 767px) {
     .chat__output {
         margin: 8px auto;
     }
 }
-
-
 
 #formattedDate {
     font-size: 0.8em;
@@ -67,7 +54,6 @@ body {
     font-style: italic;
 }
 
-/* Grundlegende Anpassungen für den Eingabebereich */
 .chat__input {
     display: flex;
     flex-direction: column;
@@ -82,7 +68,6 @@ body {
     animation: pulse 2s infinite;
 }
 
-/* Stil-Anpassungen für die Texteingabefelder */
 .chat__input input[type="text"] {
     width: 100%;
     margin: 5px 0;
@@ -90,28 +75,26 @@ body {
     border: 2px solid rgba(0, 255, 255, 0.7);
     border-radius: 5px;
     background-color: rgba(255, 255, 255, 0.1);
-    color: #292929; /* Dunkelgrau */
+    color: #292929; 
     outline: none;
 }
 
-/* Erhöht die Sichtbarkeit und das Design des Senden-Buttons */
 .chat__input button {
     width: auto;
     padding: 10px 20px;
     margin: 10px 0;
     border: none;
     border-radius: 5px;
-    background-color: #00FFFF; /* Neon-Hellblau */
+    background-color: #00FFFF; 
     color: white;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
 .chat__input button:hover {
-    background-color: #008B8B; /* Dunkleres Türkis beim Hover */
+    background-color: #008B8B; 
 }
 
-/* Pulsierende Animation */
 @keyframes pulse {
     0% {
         box-shadow: 0 0 10px rgba(0, 255, 255, 0.5), 0 0 20px rgba(0, 255, 255, 0.5);
@@ -124,7 +107,6 @@ body {
     }
 }
 
-/* Verbessert die Lesbarkeit des Platzhalters */
 .chat__input input::placeholder {
     color: rgba(0, 255, 255, 0.7);
 }
@@ -144,21 +126,19 @@ body {
     flex-direction: column;
 }
 
-/* Stil für den Nutzerprofil-Container */
 #user-profile {
-    background-color: rgba(0, 255, 255, 0.2); /* Halbtransparentes Türkis */
-    border: 2px solid rgba(0, 255, 255, 0.6); /* Leuchtender türkiser Rand */
-    padding: 20px; /* Innenabstand */
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5), 0 0 20px rgba(0, 255, 255, 0.5); /* Leuchtender Schatten für den Neon-Effekt */
-    border-radius: 10px; /* Abgerundete Ecken */
-    display: flex; /* Aktiviert Flexbox für diesen Container */
-    flex-direction: column; /* Stapelt die Kinder vertikal */
-    align-items: center; /* Zentriert die Kinder horizontal */
-    gap: 10px; /* Abstand zwischen den Kind-Elementen */
+    background-color: rgba(0, 255, 255, 0.2); 
+    border: 2px solid rgba(0, 255, 255, 0.6); 
+    padding: 20px; 
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5), 0 0 20px rgba(0, 255, 255, 0.5); 
+    border-radius: 10px; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    gap: 10px; 
     margin: 8px;
 }
 
-/* Background */
 .blur-background {
     background-image: url('assets/background.jpg');
     filter: blur(5px);
@@ -172,25 +152,24 @@ body {
     background-position: center;
 }
 
-/* Logo icon */
+
 .zwitschern-chat-logo {
     width: auto;
     height: 9vh;
     cursor: pointer;
 }
 
-/* Profile icon */
+
 .profile {
     width: auto;
     height: 7vh;
     cursor: pointer;
 }
 
-/* Header */
-/* Header Grundstile */
+
 .header {
-    opacity: 0; /* Setzt die Anfangsopazität auf 0 */
-    animation: fadeIn 3s ease-out forwards; /* Entferne die Verzögerung aus der CSS-Definition */
+    opacity: 0; 
+    animation: fadeIn 3s ease-out forwards; 
     display: flex;
     padding: 20px;
     background: linear-gradient(to right, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.8));
@@ -198,13 +177,13 @@ body {
     justify-content: center;
     align-items: center;
     box-shadow: 0 0 10px rgba(0, 255, 255, 0.5), 0 0 20px rgba(0, 255, 255, 0.5);
-    position: relative; /* Ermöglicht die Positionierung der Pseudo-Elemente */
+    position: relative;
     width: auto;
-    height: auto; /* Anpassung für die Höhe, um den gesamten Header zu umfassen */
+    height: auto; 
     margin: 8px;
 }
 
-/* Animation definieren */
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -217,7 +196,7 @@ body {
 .header::before {
     content: "";
     position: absolute;
-    top: -10px; /* Anpassen, um den Effekt um den Header zu zentrieren */
+    top: -10px; 
     left: -10px;
     right: -10px;
     bottom: -10px;
@@ -242,18 +221,18 @@ body {
     }
 }
 
-/* Weitere Header- und Elementstile */
+
 .zwitschern-chat-logo, .profile, .header__text, .header__title, .header__subtitle {
-    position: relative; /* Stellt sicher, dass diese Elemente über dem animierten Pseudo-Element stehen */
+    position: relative; 
 }
 
-/* Anpassungen für Logo und Profile-Icons */
+
 .zwitschern-chat-logo, .profile {
     width: auto;
     cursor: pointer;
 }
 
-/* Anpassungen für Header-Text */
+
 .header__text {
     display: flex;
     flex-direction: column;
@@ -264,7 +243,7 @@ body {
 }
 
 .header__title, .header__subtitle {
-    color: #1da1f2; /* Einheitliche Farbe für Text */
+    color: #1da1f2;
 }
 
 .header__text {
@@ -288,7 +267,7 @@ body {
     color: #1da1f2;
 }
 
-/* Media Queries for Desktop */
+
 @media (min-width: 1024px) {
     .zwitschern-chat-logo, .profile {
         height: 15vh; 
@@ -308,7 +287,7 @@ body {
     }
 }
 
-/* Media Queries for Tablet and iPad */
+
 @media (min-width: 768px) and (max-width: 1023px) {
     .zwitschern-chat-logo, .profile {
         height: 10vh; 
