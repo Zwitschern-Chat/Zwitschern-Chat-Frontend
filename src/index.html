@@ -157,6 +157,8 @@ async function sendMessage() {
 
 // Funktion, um Nachrichten vom Server zu holen und Nutzerinformationen anzuzeigen
 async function fetchPosts() {
+  const postList = document.getElementById('chat__output');
+  postList.innerHTML = '';
   let currentUserNumber = null;
 
   // Zuerst den eingeloggten Benutzer abrufen und seine Nummer speichern
@@ -206,7 +208,11 @@ async function fetchPosts() {
         editAndDeleteIcons = `<img src="assets/edit.png" alt="Bearbeiten" style="width: 15px; height: 15px; margin-left: 5px; cursor:pointer;" onclick="editPost('${post.id}')"><img src="assets/delete.png" alt="Löschen" style="width: 15px; height: 15px; margin-left: 5px; cursor:pointer;" onclick="deletePost('${post.id}')">`;
       }
 
-      const postContent = `<div class="post" style="cursor:pointer;"> <div id="userContent">${userContent}</div> <div id="formattedDate">${formattedDate}</div> <div id="message">${post.message}${editAndDeleteIcons}</div></div>`;
+      const postContent = `<div class="post" data-post-id="${post.id}" style="cursor:pointer;">
+                          <div id="userContent">${userContent}</div>
+                          <div id="formattedDate">${formattedDate}</div>
+                          <div id="message">${post.message}${editAndDeleteIcons}</div>
+                          </div>`;
       postList.innerHTML += postContent;
     }
     const messagePlaceholder = document.getElementById('message-placeholder');
@@ -218,6 +224,66 @@ async function fetchPosts() {
 }
 fetchPosts();
 // ende
+
+// Funktion, um Nachricht zu bearbeiten
+async function editPost(postId) {
+  const postElement = document.querySelector(`.post[data-post-id="${postId}"]`);
+  let messageElement = postElement.querySelector('#message');
+  const originalMessage = messageElement.textContent;
+  const inputElement = document.createElement('input');
+  inputElement.type = 'text';
+  inputElement.value = originalMessage;
+  messageElement.parentNode.replaceChild(inputElement, messageElement);
+
+  inputElement.focus();
+
+  inputElement.onblur = async () => {
+    const updatedMessage = inputElement.value;
+    // Senden der aktualisierten Nachricht an den Server
+    try {
+      const response = await fetch(`/auth/v1.0/post/${postId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: updatedMessage }),
+      });
+      if (!response.ok) {
+        throw new Error('Fehler beim Aktualisieren der Nachricht');
+      }
+      // Ersetze das Eingabefeld durch den aktualisierten Text
+      messageElement.textContent = updatedMessage;
+      inputElement.parentNode.replaceChild(messageElement, inputElement);
+    } catch (error) {
+      console.error('Fehler beim Aktualisieren der Nachricht:', error);
+      // Im Fehlerfall den originalen Text wiederherstellen
+      messageElement.textContent = originalMessage;
+      inputElement.parentNode.replaceChild(messageElement, inputElement);
+    }
+  };
+}
+
+// Funktion, um Nachricht zu löschen
+async function deletePost(postId) {
+  const confirmation = confirm('Möchtest du diese Nachricht wirklich löschen?');
+  if (confirmation) {
+    try {
+      const response = await fetch(`/auth/v1.0/post/${postId}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        throw new Error('Fehler beim Löschen der Nachricht');
+      }
+      // Entferne die Nachricht aus der Anzeige
+      const postElement = document.querySelector(`.post[data-post-id="${postId}"]`);
+      postElement.remove();
+    } catch (error) {
+      console.error('Fehler beim Löschen der Nachricht:', error);
+    }
+  }
+}
+
+
 
 // Funktion, um Nutzerinformationen anhand der Benutzernummer zu holen
 async function fetchUser(user_number) {
