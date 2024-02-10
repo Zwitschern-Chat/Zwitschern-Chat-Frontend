@@ -84,7 +84,7 @@ body {
     border: 2px solid rgba(0, 255, 255, 0.7);
     border-radius: 5px;
     background-color: rgba(255, 255, 255, 0.1);
-    color: #00FFFF; /* Leichtes Türkis für den Text */
+    color: #292929; /* Dunkelgrau */
     outline: none;
 }
 
@@ -173,8 +173,8 @@ body {
     cursor: pointer;
 }
 
-/* Account icon */
-.account {
+/* Profile icon */
+.profile {
     width: auto;
     height: 7vh;
     cursor: pointer;
@@ -237,12 +237,12 @@ body {
 }
 
 /* Weitere Header- und Elementstile */
-.zwitschern-chat-logo, .account, .header__text, .header__title, .header__subtitle {
+.zwitschern-chat-logo, .profile, .header__text, .header__title, .header__subtitle {
     position: relative; /* Stellt sicher, dass diese Elemente über dem animierten Pseudo-Element stehen */
 }
 
-/* Anpassungen für Logo und Account-Icons */
-.zwitschern-chat-logo, .account {
+/* Anpassungen für Logo und Profile-Icons */
+.zwitschern-chat-logo, .profile {
     width: auto;
     cursor: pointer;
 }
@@ -284,7 +284,7 @@ body {
 
 /* Media Queries for Desktop */
 @media (min-width: 1024px) {
-    .zwitschern-chat-logo, .account {
+    .zwitschern-chat-logo, .profile {
         height: 15vh; 
         width: auto;
     }
@@ -304,7 +304,7 @@ body {
 
 /* Media Queries for Tablet and iPad */
 @media (min-width: 768px) and (max-width: 1023px) {
-    .zwitschern-chat-logo, .account {
+    .zwitschern-chat-logo, .profile {
         height: 10vh; 
         width: auto;
     }

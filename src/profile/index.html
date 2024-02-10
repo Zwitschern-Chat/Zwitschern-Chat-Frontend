@@ -30,7 +30,8 @@
     <div class="header__title">ZWITSCHERN.CHAT</div>
     <div class="header__subtitle">DER CHAT FÜR ALLE!</div>
   </div>
-  <img src="../assets/logout.png" alt="Account" class="account" onclick="window.location.href='https://zwitschern.chat/auth/v1.0/logout'">
+  <img src="../assets/logout.png" alt="Logout" class="profile" id="logoutButton" onclick="window.location.href='https://zwitschern.chat/auth/v1.0/logout'">
+  <img src="../assets/profile.png" alt="Profile" class="profile hide" id="profileButton" onclick="window.location.href='https://zwitschern.chat/auth/v1.0/profile'">  
 </div>
 
 <!-- Container für Nutzername und Profilbild -->
@@ -39,13 +40,19 @@
   <div id="user-name-container">
     <span id="user-name-display"></span>
     <input type="text" id="user-name-input" style="display:none;" />
-    <button onclick="toggleEdit('user-name')" style="border: none; background-color: transparent; cursor: pointer;">
+    <button id="editUsername" onclick="toggleEdit('user-name')" style="border: none; background-color: transparent; cursor: pointer;">
       <img src="../assets/edit.png" alt="Edit" style="width: 20px; height: 20px; margin: -4px;">
     </button>
   </div>
   <div id="user-email-display"></div>
   <div id="user-creation-date-display"></div>
-  <div id="user-bio-display"></div>
+    <div id="user-bio-container">
+    <span id="user-bio-display"></span>
+    <input type="text" id="user-bio-input" style="display:none;" />
+    <button id="editBio" onclick="toggleEdit('user-bio')" style="border: none; background-color: transparent; cursor: pointer;">
+      <img src="../assets/edit.png" alt="Edit" style="width: 20px; height: 20px; margin: -4px;">
+    </button>
+  </div>
 </div>
 
 
@@ -54,20 +61,32 @@
 window.addEventListener('load', function() {
     document.querySelector('.header').classList.add('loaded');
 });
-
-
-
   // Hilfsfunktion, um den Benutzer zur Startseite zu leiten
   function redirectToHome() {
-    var baseUrl = window.location.href.split('/account')[0];
+    var baseUrl = window.location.href.split('/profile')[0];
     window.location.href = baseUrl;
 }
+
+// Funktion, um URL-Parameter zu erhalten
+function getQueryParam(param) {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(param);
+}
+
 
 
 // only fetch user data if not on localhost
 if (!window.location.hostname.includes('localhost')) {
   // Rufen Sie die Funktion beim Laden der Seite auf
+  if (getQueryParam('username')) {
+  window.onload = loadUserInfoByUsername;
+  // Change Logout button to Profile Button
+  document.getElementById('logoutButton').classList.add('hide');
+  document.getElementById('profileButton').classList.remove('hide');
+
+  } else {
   window.onload = fetchAuthUserData;
+  }
 } else {
   document.getElementById('user-profile-picture').src = 'https://via.placeholder.com/100';
   document.getElementById('user-name-display').textContent = 'Nicht verfügbar auf localhost';
@@ -76,11 +95,49 @@ if (!window.location.hostname.includes('localhost')) {
   document.getElementById('user-bio-display').textContent = 'Bio: Nicht verfügbar';
 }
 
+// Hauptfunktion, um Nutzerinformationen basierend auf dem 'username' URL-Parameter zu laden
+function loadUserInfoByUsername() {
+  const username = getQueryParam('username');
+  if (username) {
+    fetch(`/api/v1.0/user/${username}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Nutzerinformationen konnten nicht geladen werden');
+        }
+        return response.json();
+      })
+      .then(data => {
+        document.getElementById('user-profile-picture').src = data.profile_picture || 'https://via.placeholder.com/100';
+        document.getElementById('user-name-display').textContent = `Nutzername: ${username}`;
+        document.getElementById('user-creation-date-display').textContent = `Beitritt am: ${new Date(data.created_at).toLocaleDateString()}`;
+        document.getElementById('user-bio-display').textContent = `Bio: ${data.bio || 'Noch nicht angegeben'}`;
+
+        // Editier-Buttons ausblenden
+        const editUsernameButton = document.getElementById('editUsername');
+        editUsernameButton.style.display = 'none';
+        const editBioButton = document.getElementById('editBio');
+        editBioButton.style.display = 'none';
+        
+        // Elemente, die nicht befüllt sind, ausblenden
+        document.getElementById('user-email-display').style.display = 'none';
+        
+        // Profilcontainer anzeigen
+        document.getElementById('user-profile').classList.remove('hide');
+      })
+      .catch(error => {
+        console.error('Fehler:', error);
+      });
+  }
+}
+
+
+
 function toggleEdit(elementId) {
   const displaySpan = document.getElementById(`${elementId}-display`);
   const inputField = document.getElementById(`${elementId}-input`);
   if (inputField.style.display === "none") {
-    inputField.value = displaySpan.textContent.replace('Nutzername: ', ''); // Entfernen des Präfixes
+    // Clear the input field and set the value to the current display value
+    inputField.value = displaySpan.textContent.split(': ')[1];
     inputField.style.display = "";
     displaySpan.style.display = "none";
   } else {
@@ -91,64 +148,70 @@ function toggleEdit(elementId) {
 }
 
 function updateUserData(field, newValue) {
-   let newUsername = document.getElementById('user-name-input').value;
-  if (!newUsername) {
-    alert('Bitte geben Sie einen Benutzernamen ein');
-    return;
-  } 
+  let inputField = document.getElementById(`${field}-input`);
+  // Variable für den Endpunkt festlegen
+  let endpoint;
+  if (field === 'user-name') {
+    endpoint = '/auth/v1.0/username';
+    // Da inputField bereits definiert ist, ist diese Zeile überflüssig
+    // inputField = document.getElementById(`${field}-input`);
+  } else if (field === 'user-bio') {
+    endpoint = '/auth/v1.0/bio';
+    // inputField = document.getElementById(`${field}-input`); ist ebenfalls überflüssig
+  }
+
   fetch('/auth/v1.0/user')
-  .then(response => {
-    if (response.ok) {
-      return response.json();
-    } 
-  })
-  .then(data => {
-    const sub = data.sub;
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+    })
+    .then(data => {
+      const sub = data.sub;
 
-    // Verwenden Sie die aktualisierten Variablen, um die nächste Anfrage zu machen
-    return fetch(`/api/v1.0/user_sub/${sub}`);
-  })
-  .then(response => {
-    if (response.ok) {
-      return response.json();
-    }
-  })
-  .then(data => {
-    const user_number = data.number;
-    console.log(user_number);
-
-
-
-
-    return fetch('/auth/v1.0/username', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        user_number: user_number,
-        username: newUsername
-      })
+      // Verwenden Sie die aktualisierten Variablen, um die nächste Anfrage zu machen
+      return fetch(`/api/v1.0/user_sub/${sub}`);
     })
     .then(response => {
       if (response.ok) {
         return response.json();
-      } else {
-        throw new Error('Fehler beim Aktualisieren des Benutzernamens');
       }
     })
     .then(data => {
-      document.getElementById(`${field}-display`).textContent = `Nutzername: ${newValue}`;
-      console.log('Benutzername erfolgreich aktualisiert', data);
+      const user_number = data.number;
+      console.log(user_number);
+
+      // Verwenden des dynamischen Endpunkts basierend auf dem aktualisierten Feld
+      return fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_number: user_number,
+          [field === 'user-name' ? 'username' : 'bio']: newValue
+        })
+      })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error(`Fehler beim Aktualisieren des ${field === 'user-name' ? 'Benutzernamens' : 'Bio'}`);
+        }
+      })
+      .then(data => {
+        document.getElementById(`${field}-display`).textContent = `${field === 'user-name' ? 'Nutzername: ' : 'Bio: '} ${newValue}`;
+        console.log(`${field === 'user-name' ? 'Benutzername' : 'Bio'} erfolgreich aktualisiert`, data);
+      })
+      .catch(error => {
+        console.error('Fehler:', error);
+      });
     })
     .catch(error => {
-      console.error('Fehler:', error);
-    });
-  })
-  .catch(error => {
     console.error('Fehler:', error);
   });
 }
+
 
 // Funktion, um Nutzerdaten vom Auth-Server zu holen  
 function fetchAuthUserData() {

@@ -29,8 +29,8 @@
     <div class="header__title">ZWITSCHERN.CHAT</div>
     <div class="header__subtitle">DER CHAT FÜR ALLE!</div>
   </div>
-  <img src="assets/login.png" alt="Login" class="account" id="loginButton" onclick="window.location.href='https://zwitschern.chat/auth/v1.0/login'" style="display:none;">
-  <img src="assets/account.png" alt="Account" class="account" id="accountButton" onclick="window.location.href='https://zwitschern.chat/auth/v1.0/account'" style="display:none;">  
+  <img src="assets/login.png" alt="Login" class="profile" id="loginButton" onclick="window.location.href='https://zwitschern.chat/auth/v1.0/login'" style="display:none;">
+  <img src="assets/profile.png" alt="Profile" class="profile" id="profileButton" onclick="window.location.href='https://zwitschern.chat/auth/v1.0/profile'" style="display:none;">  
 </div>
 
 
@@ -74,11 +74,11 @@ async function checkLoginStatus() {
         const statusText = await response.text();
         
         if (statusText === 'Logged in') {
-            document.getElementById('accountButton').style.display = 'block';
+            document.getElementById('profileButton').style.display = 'block';
             document.getElementById('loginButton').style.display = 'none';
         } else {
             document.getElementById('loginButton').style.display = 'block';
-            document.getElementById('accountButton').style.display = 'none';
+            document.getElementById('profileButton').style.display = 'none';
         }
     } catch (error) {
         console.error('Fehler beim Überprüfen des Login-Status:', error);
@@ -178,9 +178,10 @@ async function fetchPosts() {
       const date = new Date(post.created_at);
       const formattedDate = date.toLocaleString('de-DE'); // Passt das Format gegebenenfalls an Ihre Anforderungen an
 
-      const postContent = `<div class="post"> <div id="userContent">${userContent}</div> <div id="formattedDate">${formattedDate}</div> <id="message">${post.message}</div></div>`;
+      // Hier ändern wir die Erstellung des Post-Inhalts, um einen anklickbaren Container zu erstellen
+      const postContent = `<div class="post" onclick="location.href='https://zwitschern.chat/profile?username=${user ? user.username : 'anonymous'}'" style="cursor:pointer;"> <div id="userContent">${userContent}</div> <div id="formattedDate">${formattedDate}</div> <div id="message">${post.message}</div></div>`;
       postList.innerHTML += postContent;
-    }    
+    }
     const messagePlaceholder = document.getElementById('message-placeholder');
     messagePlaceholder.parentElement.classList.add('hide');
     postList.parentElement.classList.remove('hide');
