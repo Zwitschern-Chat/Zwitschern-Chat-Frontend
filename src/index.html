@@ -157,6 +157,25 @@ async function sendMessage() {
 
 // Funktion, um Nachrichten vom Server zu holen und Nutzerinformationen anzuzeigen
 async function fetchPosts() {
+  let currentUserNumber = null;
+
+  // Zuerst den eingeloggten Benutzer abrufen und seine Nummer speichern
+  try {
+    const userResponse = await fetch('/auth/v1.0/user');
+    if (userResponse.ok) {
+      const userData = await userResponse.json();
+      const sub = userData.sub;
+      const userSubResponse = await fetch(`/api/v1.0/user_sub/${sub}`);
+      if (userSubResponse.ok) {
+        const userSubData = await userSubResponse.json();
+        currentUserNumber = userSubData.number;
+      }
+    }
+  } catch (error) {
+    console.error('Fehler beim Abrufen des aktuellen Benutzers:', error);
+  }
+
+  // Dann Nachrichten abrufen und anzeigen
   try {
     const url = `${API_BASE_URL}/api/v1.0/posts`;
     const response = await fetch(url);
@@ -167,27 +186,35 @@ async function fetchPosts() {
     const postList = document.getElementById('chat__output');
     postList.innerHTML = '';
 
-    // Umkehren der Nachrichten, sodass die neueste Nachricht zuerst angezeigt wird
     const reversedData = data.reverse();
 
     for (const post of reversedData) {
-      const user = await fetchUser(post.user_number); // Benutzerinformationen holen
-      const userContent = user ? `<img src="${user.profile_picture}" alt="Profilbild" style="width: 20px; height: 20px;"> <span>${user.username}</span>` : '<span>Anonymer Nutzer</span>';
-
-      // Datum formatieren 
+      const user = await fetchUser(post.user_number);
+      let userContent;
+      if (user) {
+        userContent = currentUserNumber === post.user_number
+          ? `<img src="${user.profile_picture}" alt="Profilbild" style="width: 20px; height: 20px;"> <u>${user.username}</u>`
+          : `<img src="${user.profile_picture}" alt="Profilbild" style="width: 20px; height: 20px;"> <span>${user.username}</span>`;
+      } else {
+        userContent = '<span>Anonymer Nutzer</span>';
+      }
       const date = new Date(post.created_at);
-      const formattedDate = date.toLocaleString('de-DE'); // Passt das Format gegebenenfalls an Ihre Anforderungen an
+      const formattedDate = date.toLocaleString('de-DE');
 
-      // Hier ändern wir die Erstellung des Post-Inhalts, um einen anklickbaren Container zu erstellen
-      const postContent = `<div class="post" onclick="location.href='https://zwitschern.chat/profile?username=${user ? user.username : 'anonymous'}'" style="cursor:pointer;"> <div id="userContent">${userContent}</div> <div id="formattedDate">${formattedDate}</div> <div id="message">${post.message}</div></div>`;
+      let editAndDeleteIcons = '';
+      if (currentUserNumber === post.user_number) {
+        editAndDeleteIcons = `<img src="assets/edit.png" alt="Bearbeiten" style="width: 15px; height: 15px; margin-left: 5px; cursor:pointer;" onclick="editPost('${post.id}')"><img src="assets/delete.png" alt="Löschen" style="width: 15px; height: 15px; margin-left: 5px; cursor:pointer;" onclick="deletePost('${post.id}')">`;
+      }
+
+      const postContent = `<div class="post" style="cursor:pointer;"> <div id="userContent">${userContent}</div> <div id="formattedDate">${formattedDate}</div> <div id="message">${post.message}${editAndDeleteIcons}</div></div>`;
       postList.innerHTML += postContent;
     }
     const messagePlaceholder = document.getElementById('message-placeholder');
     messagePlaceholder.parentElement.classList.add('hide');
     postList.parentElement.classList.remove('hide');
-  } catch (error) {
-    console.error('Es gab ein Problem mit der Fetch-Anfrage:', error);
-  }
+    } catch (error) {
+      console.error('Es gab ein Problem mit der Fetch-Anfrage:', error);
+    }
 }
 fetchPosts();
 // ende
