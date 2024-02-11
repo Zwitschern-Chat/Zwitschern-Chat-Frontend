@@ -134,7 +134,7 @@ function toggleEdit(elementId) {
   const inputField = document.getElementById(`${elementId}-input`);
   if (inputField.style.display === "none") {
     // Clear the input field and set the value to the current display value
-    inputField.value = displaySpan.textContent.split(': ')[1];
+    inputField.value = displaySpan.textContent;
     inputField.style.display = "";
     displaySpan.style.display = "none";
   } else {
@@ -183,7 +183,7 @@ function updateUserData(field, newValue) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          number: number,
+          user_number: number,
           [field === 'user-name' ? 'username' : 'bio']: newValue
         })
       })
